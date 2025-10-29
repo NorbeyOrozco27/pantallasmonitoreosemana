@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor de Salidas - Sistema de Transporte</title>
+  <!-- Google Fonts: Lato + Cinzel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Encabezado unificado -->
+  <div class="encabezado">
+    <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
+    <div class="texto-desplazante-container">
+      <div class="texto-desplazante">
+        TransUnidos una empresa con vocación de servicio
+      </div>
+    </div>
+    <div id="reloj-digital"></div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <!-- GIFs contextuales - AHORA ENCIMA DE LA TABLA -->
+  <div id="gifs-contextuales" style="display: none;">
+    <div id="gifs-inner"></div>
+  </div>
+
+  <!-- Tabla -->
+  <div id="proximos-turnos-card" class="card full-screen">
+    <div class="card-header">
+      <i class="fa-solid fa-list"></i>
+      <h2>Próximos Turnos</h2>
+    </div>
+    <div class="card-body">
+      <div class="filtros">
+        <label for="filtro-origen">Origen:</label>
+        <select id="filtro-origen">
+          <option value="">Todos los orígenes</option>
+        </select>
+      </div>
+      <div id="proximos-loader" class="loader">
+        <i class="fa-solid fa-spinner"></i>
+      </div>
+      <div id="proximos-content" class="proximos-body" style="display:none;">
+        <table id="tabla-proximos">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Vehículo</th>
+              <th>Ruta</th>
+              <th>Vía</th>
+              <th>Tiempo</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clima contextual -->
+  <div id="clima-contextual"></div>
+
+  <!-- Configuración de Supabase -->
+  <script>
+    const SUPABASE_CONFIG = {
+      url: 'https://eugeraeqrmxxbpfkifvi.supabase.co',
+      key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1Z2VyYWVxcm14eGJwZmtpZnZpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0OTE4MjIwNiwiZXhwIjoyMDY0NzU4MjA2fQ.xrS1gT2zm4uixmawLNKSazD-3JlgecaC7dqpNB9qRi8'
+    };
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
