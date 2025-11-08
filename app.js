@@ -28,7 +28,7 @@ const vehiculosMap = {
   186: "Microbus", 187: "Microbus", 188: "Microbus", 189: "Microbus", 190: "Microbus",
   191: "Microbus", 192: "Microbus", 193: "Microbus", 194: "Microbus", 195: "Microbus",
   196: "Microbus", 197: "Bus", 198: "Microbus", 2: "Vans", 3: "Vans", 4: "Vans"
-};
+}; 
 
 // === Mapeo clima por origen ===
 const CLIMA_MAPPINGS = {
