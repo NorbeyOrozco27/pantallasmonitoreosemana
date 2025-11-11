@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monitor de Salidas - Sistema de Transporte</title>
+  <title>Monitor de Salidas - TransUnidos</title>
   <!-- Google Fonts: Lato + Cinzel -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,23 +14,37 @@
 <body>
   <!-- Encabezado unificado -->
   <div class="encabezado">
-    <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
-    <div class="texto-desplazante-container">
-      <div class="texto-desplazante">  
-        TransUnidos una empresa con vocación de servicio
+    <div class="encabezado-izq">
+      <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
+    </div>
+    
+    <div class="encabezado-centro">
+      <!-- GIF CONTEXTUAL -->
+      <div id="gifs-contextuales" style="display: none;">
+        <div id="gifs-inner"></div>
+      </div>
+      
+      <div id="reloj-digital" class="reloj-estilizado"></div>
+    </div>
+    
+    <div class="encabezado-der">
+      <!-- TEXTO DESPLAZANTE RESPONSIVE -->
+      <div class="texto-desplazante-container">
+        <div class="texto-desplazante">  
+          TransUnidos una empresa con vocación de servicio
+        </div>
       </div>
     </div>
-    <div id="reloj-digital"></div>
+  </div>
+
+  <!-- Ticker de avisos especiales -->
+  <div id="ticker-avisos" class="ticker-avisos" style="display: none;">
+    <div id="ticker-contenido" class="ticker-contenido"></div>
   </div>
 
   <div id="toast-container"></div>
 
-  <!-- GIFs contextuales - AHORA ENCIMA DE LA TABLA -->
-  <div id="gifs-contextuales" style="display: none;">
-    <div id="gifs-inner"></div>
-  </div>
-
-  <!-- Tabla -->
+  <!-- Contenido principal -->
   <div id="proximos-turnos-card" class="card full-screen">
     <div class="card-header">
       <i class="fa-solid fa-list"></i>
@@ -43,6 +57,13 @@
           <option value="">Todos los orígenes</option>
         </select>
       </div>
+
+      <!-- Avisos especiales -->
+      <div id="avisos-especiales" class="aviso-especial" style="display: none;">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span id="aviso-texto"></span>
+      </div>
+
       <div id="proximos-loader" class="loader">
         <i class="fa-solid fa-spinner"></i>
       </div>
