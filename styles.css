@@ -8,6 +8,16 @@
   --accent-color: #2d8cff; /* Azul Neón */
   --success-color: #1dc981;
   --warning-color: #ffc247;
+  
+  /* NUEVOS COLORES PARA EL RUTERO LED (ÁMBAR/NARANJA NEÓN) */
+  --rutero-bg: #151000; /* Fondo negro muy oscuro */
+  --rutero-text-color: #ffaa00; /* Ámbar/Naranja Neón */
+  
+  /* Variables para la animación de estrellas (Convertidas a CSS) */
+  --shooting-time: 3000ms;
+  --star-color-start: rgba(95, 145, 255, 1);
+  --star-color-end: rgba(0, 0, 255, 0);
+  --star-shadow: rgba(105, 155, 255, 1);
 }
 
 * { 
@@ -59,24 +69,51 @@ body {
   justify-content: center;
   align-items: center;
   gap: 15px;
+  position: relative; 
+  overflow: hidden; 
+  min-height: 100px;
+}
+
+/* --- LOGO CONTENEDOR (Para el estilo circular de la imagen original) --- */
+.logo-container {
+    height: 70px;
+    width: 70px;
+    background: #ffffff; /* Fondo blanco */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    overflow: hidden; 
 }
 
 .logo { 
-  height: 65px; /* Aumentado de 50px a 65px */
-  border-radius: 50%; /* Hecho completamente redondo */
-  box-shadow: 0 2px 8px rgba(0,0,0,0.4); 
+  height: 90%; 
+  width: 90%;
+  object-fit: contain; 
+  border-radius: 50%; 
 }
 
-/* ========== RELOJ ESTILIZADO ========== */
+/* ========== RELOJ Y CLIMA GROUP (Ajuste de Layout) ========== */
+#reloj-clima-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10; /* Por encima de las estrellas */
+}
+
+
+/* ========== RELOJ ESTILIZADO (Redimensionado) ========== */
 .reloj-estilizado {
-  font-size: 2.5rem;
+  z-index: 10;
+  font-size: 2.2rem; /* Reducido para hacer espacio al clima */
   font-weight: 800;
   color: #ffffff;
   font-family: 'Courier New', monospace;
   background: linear-gradient(135deg, #0d2a4a, #1a3a5f);
-  padding: 15px 30px;
+  padding: 10px 20px; /* Reducido el padding */
   border-radius: 12px;
-  min-width: 200px;
+  min-width: 150px;
   text-align: center;
   box-shadow: 
       0 4px 15px rgba(0,0,0,0.3),
@@ -96,6 +133,7 @@ body {
                  inset 0 1px 0 rgba(255,255,255,0.3);
   }
 }
+
 
 /* ========== TEXTO DESPLAZANTE MEJORADO ========== */
 .texto-desplazante-container { 
@@ -131,8 +169,9 @@ body {
     width: 100%;
 }
 
-/* ========== GIFS CONTEXTUALES ========== */
+/* ========== GIFS CONTEXTUALES (Z-Index para estar sobre las estrellas) ========== */
 #gifs-contextuales {
+    z-index: 10;
     background: rgba(10, 25, 47, 0.9);
     border-radius: 50%;
     padding: 8px;
@@ -167,21 +206,145 @@ body {
   opacity: 1;
 }
 
-/* ========== TICKER ESTILO BOLSA DE VALORES - CAMBIADO A AZUL NEÓN ========== */
+/* ==================================================
+   ANIMACIÓN DE ESTRELLAS FUGACES (Fondo de .encabezado-centro)
+   ================================================== */
+#shooting-stars-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at bottom, #151d2b 0%, #06081b 100%);
+  transform: rotateZ(45deg); 
+  z-index: 1; 
+}
+
+.shooting_star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(-45deg, var(--star-color-start), var(--star-color-end));
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px var(--star-shadow));
+  animation:
+    tail var(--shooting-time) ease-in-out infinite,
+    shooting var(--shooting-time) ease-in-out infinite;
+}
+
+.shooting_star::before {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 0;
+    height: 2px;
+    background: linear-gradient(-45deg, var(--star-color-end), var(--star-color-start), var(--star-color-end));
+    transform: translateX(50%) rotateZ(45deg);
+    border-radius: 100%;
+    animation: shining var(--shooting-time) ease-in-out infinite;
+    animation-delay: inherit; 
+}
+
+.shooting_star::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 0;
+    height: 2px;
+    background: linear-gradient(-45deg, var(--star-color-end), var(--star-color-start), var(--star-color-end));
+    transform: translateX(50%) rotateZ(-45deg); 
+    border-radius: 100%;
+    animation: shining var(--shooting-time) ease-in-out infinite;
+    animation-delay: inherit; 
+}
+
+/* Posiciones y delays aleatorios para las 20 estrellas (Convertido de SCSS) */
+.shooting_star:nth-child(1) { top: calc(50% - -113px); left: calc(50% - 149px); animation-delay: 4366ms; }
+.shooting_star:nth-child(2) { top: calc(50% - 13px); left: calc(50% - 145px); animation-delay: 1533ms; }
+.shooting_star:nth-child(3) { top: calc(50% - 37px); left: calc(50% - 280px); animation-delay: 8468ms; }
+.shooting_star:nth-child(4) { top: calc(50% - -73px); left: calc(50% - 165px); animation-delay: 6940ms; }
+.shooting_star:nth-child(5) { top: calc(50% - -186px); left: calc(50% - 66px); animation-delay: 4323ms; }
+.shooting_star:nth-child(6) { top: calc(50% - 71px); left: calc(50% - 219px); animation-delay: 1795ms; }
+.shooting_star:nth-child(7) { top: calc(50% - -6px); left: calc(50% - 200px); animation-delay: 792ms; }
+.shooting_star:nth-child(8) { top: calc(50% - 173px); left: calc(50% - 188px); animation-delay: 8466ms; }
+.shooting_star:nth-child(9) { top: calc(50% - -189px); left: calc(50% - 291px); animation-delay: 7643ms; }
+.shooting_star:nth-child(10) { top: calc(50% - 146px); left: calc(50% - 279px); animation-delay: 9636ms; }
+.shooting_star:nth-child(11) { top: calc(50% - -18px); left: calc(50% - 270px); animation-delay: 9283ms; }
+.shooting_star:nth-child(12) { top: calc(50% - -72px); left: calc(50% - 300px); animation-delay: 5742ms; }
+.shooting_star:nth-child(13) { top: calc(50% - -186px); left: calc(50% - 216px); animation-delay: 8464ms; }
+.shooting_star:nth-child(14) { top: calc(50% - -123px); left: calc(50% - 20px); animation-delay: 7716ms; }
+.shooting_star:nth-child(15) { top: calc(50% - -133px); left: calc(50% - 253px); animation-delay: 1729ms; }
+.shooting_star:nth-child(16) { top: calc(50% - 73px); left: calc(50% - 245px); animation-delay: 1105ms; }
+.shooting_star:nth-child(17) { top: calc(50% - -47px); left: calc(50% - 72px); animation-delay: 2605ms; }
+.shooting_star:nth-child(18) { top: calc(50% - 20px); left: calc(50% - 270px); animation-delay: 4334ms; }
+.shooting_star:nth-child(19) { top: calc(50% - 85px); left: calc(50% - 150px); animation-delay: 5495ms; }
+.shooting_star:nth-child(20) { top: calc(50% - 173px); left: calc(50% - 100px); animation-delay: 7578ms; }
+
+
+@keyframes tail {
+  0% { width: 0; }
+  30% { width: 100px; }
+  100% { width: 0; }
+}
+
+@keyframes shining {
+  0% { width: 0; }
+  50% { width: 30px; }
+  100% { width: 0; }
+}
+
+@keyframes shooting {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(300px); }
+}
+
+/* ==================================================
+   FIN ANIMACIÓN DE ESTRELLAS
+   ================================================== */
+
+
+/* CLAVE: Estilos para el clima a la izquierda del reloj */
+#clima-contextual {
+  z-index: 10;
+  /* Reset de estilos de posición absoluta anterior */
+  position: static; 
+  top: auto; 
+  transform: none; 
+  right: auto; 
+  
+  /* Mantener el estilo del recuadro del clima */
+  background: rgba(10, 25, 47, 0.95);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  min-width: 140px;
+  max-width: 160px;
+}
+
+/* ========== TICKER ESTILO RUTERO LED ÁMBAR/NARANJA NEÓN ========== */
 .ticker-avisos {
-    /* Color base azul neón */
-    background: linear-gradient(90deg, #001f3f, #004080, #001f3f); 
-    color: var(--accent-color); /* Usar el azul de acento */
+    /* Fondo oscuro, apariencia de panel LED */
+    background: var(--rutero-bg);
+    color: var(--rutero-text-color); 
     padding: 10px 0;
-    border-top: 2px solid var(--accent-color);
-    border-bottom: 2px solid var(--accent-color);
+    border-top: 2px solid var(--rutero-text-color);
+    border-bottom: 2px solid var(--rutero-text-color);
     overflow: hidden;
     position: relative;
-    font-family: 'Courier New', monospace;
+    
+    /* Fuente Pixel/LED para simular el rutero */
+    font-family: 'Share Tech Mono', monospace; 
     font-weight: bold;
-    font-size: 1.2rem;
-    box-shadow: 0 0 15px rgba(45, 140, 255, 0.5); /* Sombra azul */
-    animation: neon-pulse-blue 2s infinite alternate; /* Animación azul */
+    font-size: 1.4rem; /* Un poco más grande para el efecto LED */
+    
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.5); /* Sombra Ámbar */
+    animation: neon-pulse-amber 2s infinite alternate; 
     z-index: 1000;
     margin: 5px 0;
     border-radius: 5px;
@@ -192,7 +355,15 @@ body {
     padding-left: 100%;
     white-space: nowrap;
     animation: ticker-scroll 25s linear infinite;
-    text-shadow: 0 0 5px var(--accent-color); /* Sombra de texto azul */
+    text-shadow: 0 0 5px var(--rutero-text-color); /* Sombra de texto Ámbar */
+    /* Simulación de la matriz de puntos LED */
+    text-rendering: optimizeSpeed; 
+    letter-spacing: 1px;
+}
+
+@keyframes neon-pulse-amber {
+    0% { box-shadow: 0 0 5px var(--rutero-text-color); }
+    100% { box-shadow: 0 0 20px var(--rutero-text-color), 0 0 30px rgba(255, 170, 0, 0.8); }
 }
 
 @keyframes ticker-scroll {
@@ -200,31 +371,7 @@ body {
     100% { transform: translateX(-100%); }
 }
 
-/* Animación de pulso cambiada a azul neón */
-@keyframes neon-pulse-blue {
-    0% { box-shadow: 0 0 5px var(--accent-color); }
-    100% { box-shadow: 0 0 20px var(--accent-color), 0 0 30px rgba(45, 140, 255, 0.8); }
-}
-
-/* ========== CLIMA COMPACTO MEJORADO ========== */
-#clima-contextual {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-  display: none;
-  z-index: 800;
-  background: rgba(10, 25, 47, 0.95);
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: white;
-  font-size: 0.8rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  min-width: 140px;
-  max-width: 160px;
-}
-
+/* ========== CLIMA COMPACTO MEJORADO (Detalles) ========== */
 .clima-compacto {
   background: transparent;
   color: inherit;
@@ -286,6 +433,12 @@ body {
   margin-top: 4px;
 }
 
+.clima-actualizado {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  text-align: center;
+  margin-top: 2px;
+}
 /* ========== CONTENIDO PRINCIPAL ========== */
 #toast-container {
   position: fixed;
@@ -453,7 +606,7 @@ body {
   animation: parpadear-fila-verde 1.5s ease-in-out infinite;
 }
 @keyframes parpadear-fila-verde {
-  /* CAMBIADO A VERDE/CIAN SUAVE PARA MEJOR CONTRASTE CON FONDO AZUL NEÓN */
+  /* CIAN SUAVE PARA MEJOR CONTRASTE CON FONDO OSCURO */
   0% { background-color: rgba(0, 255, 255, 0.05); } 
   50% { background-color: rgba(0, 255, 255, 0.2); }
   100% { background-color: rgba(0, 255, 255, 0.05); }
@@ -568,96 +721,12 @@ body {
 
   #clima-contextual {
     position: relative;
-    bottom: auto;
+    top: auto;
     right: auto;
+    bottom: auto;
+    transform: none;
     margin: 10px auto;
     max-width: 100%;
     min-width: auto;
   }
-}
-/* Re-definiendo sección del clima para asegurar consistencia en el archivo styles.txt */
-#clima-contextual {
-  position: fixed;
-  bottom: 15px;
-  right: 15px;
-  display: none;
-  z-index: 800;
-  background: rgba(10, 25, 47, 0.95);
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: white;
-  font-size: 0.8rem;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  backdrop-filter: blur(10px);
-  min-width: 140px;
-  max-width: 160px;
-}
-
-.clima-compacto {
-  background: transparent;
-  color: inherit;
-}
-
-.clima-compacto.respaldo {
-  opacity: 0.8;
-}
-
-.clima-header-compacto {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  gap: 8px;
-}
-
-.clima-icono-compacto {
-  width: 32px;
-  height: 32px;
-  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
-}
-
-.clima-emoji {
-  font-size: 28px;
-  line-height: 1;
-  width: 32px;
-  text-align: center;
-}
-
-.clima-temp {
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: #ffd43b;
-  text-shadow: 0 0 8px rgba(255, 212, 59, 0.4);
-}
-
-.clima-detalles-compacto {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2px;
-  font-size: 0.75rem;
-  margin-bottom: 4px;
-}
-
-.clima-detalles-compacto span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 1px 0;
-}
-
-.clima-ubicacion {
-  font-size: 0.7rem;
-  opacity: 0.7;
-  text-align: center;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  padding-top: 4px;
-  margin-top: 4px;
-}
-
-.clima-actualizado {
-  font-size: 0.6rem;
-  opacity: 0.5;
-  text-align: center;
-  margin-top: 2px;
 }

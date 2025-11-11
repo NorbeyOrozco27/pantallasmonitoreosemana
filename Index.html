@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitor de Salidas - TransUnidos</title>
-  <!-- Google Fonts: Lato + Cinzel -->
+  <!-- Google Fonts: Lato + Cinzel + Share Tech Mono (Para el Ticker/Rutero) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=Cinzel:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -15,16 +15,31 @@
   <!-- Encabezado unificado -->
   <div class="encabezado">
     <div class="encabezado-izq">
-      <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
+      <!-- Contenedor para el logo con estilo circular -->
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
+      </div>
     </div>
     
     <div class="encabezado-centro">
+      <!-- FONDO DE ESTRELLAS FUGACES (para animación) -->
+      <div id="shooting-stars-bg" class="night">
+        <div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div>
+      </div>
+      
+      <!-- Agrupador para Reloj y Clima -->
+      <div id="reloj-clima-group">
+        <!-- CLIMA CONTEXTUAL -->
+        <div id="clima-contextual"></div>
+        <!-- RELOJ DIGITAL -->
+        <div id="reloj-digital" class="reloj-estilizado"></div>
+      </div>
+
       <!-- GIF CONTEXTUAL -->
       <div id="gifs-contextuales" style="display: none;">
         <div id="gifs-inner"></div>
       </div>
       
-      <div id="reloj-digital" class="reloj-estilizado"></div>
     </div>
     
     <div class="encabezado-der">
@@ -83,9 +98,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Clima contextual -->
-  <div id="clima-contextual"></div>
 
   <!-- Configuración de Supabase -->
   <script>

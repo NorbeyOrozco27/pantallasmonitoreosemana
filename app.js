@@ -2,6 +2,7 @@
 let intervaloContador, datosCompletosDelDia = [], activeToasts = {};
 let ultimaActualizacionClima = 0;
 let intervaloClima = null;
+let climaTimeout = null; // Variable para controlar el timeout de ocultamiento
 let lastCriticalTurnoId = null; // Para evitar reproducir el mismo sonido de alerta por segundo
 
 // Objetos de Audio para diferentes eventos (Asumiendo assets/attention.mp3, assets/special.mp3, assets/bip.mp3)
@@ -110,7 +111,7 @@ const horariosEspeciales = {
         { hora: "15:30", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "15:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:10", mensaje: "Ruta a La Unión", destino: "La Union" },
+        { hora: "16:10", mensaje: "Las Lomitas-El Tabor-La Pastora-El Alto", destino: "La Union" },
         { hora: "16:40", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "17:00", mensaje: "Ruta a La Unión", destino: "La Union" },
@@ -140,11 +141,11 @@ const horariosEspeciales = {
         { hora: "07:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "09:40", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "11:20", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "12:40", mensaje: "con destinino a LLanogrande, clinica Somer", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "12:40", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "14:05", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
-        { hora: "16:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
+        { hora: "16:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Norte", via: "San Antonio" },
         { hora: "17:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "16:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "16:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
@@ -227,7 +228,7 @@ const horariosEspeciales = {
         { hora: "11:30", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "12:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "13:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "13:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
+        { hora: "13:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "14:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
         { hora: "14:00", mensaje: "ruta hacia la Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "15:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
@@ -261,6 +262,19 @@ const CLIMA_MAPPINGS = {
     "Abejorral": "Abejorral",
     "default": "Medellín"
 };
+
+// ======================================
+// CONFIGURACIÓN DE COORDENADAS PARA EL CLIMA (ANTIOQUIA)
+// ======================================
+const CLIMA_COORDS = {
+    "La Union": "5.975,-75.367", // La Unión, Antioquia
+    "Rionegro": "6.142,-75.373",
+    "La Ceja": "5.971,-75.433",
+    "Medellin Term.Norte": "6.251,-75.567",
+    "Medellin Term.Sur": "6.251,-75.567",
+    "Abejorral": "5.877,-75.394"
+};
+// ======================================
 
 // ========== FUNCIONES PARA GIFS CONTEXTUALES ==========
 function normalizarNombreDestino(destino) {
@@ -523,7 +537,7 @@ function iniciarTickerAvisos() {
         }
         
         if (avisosActivos.length > 1) {
-             avisoTexto.textContent = `⚡ ¡ATENCIÓN! Múltiples salidas especiales a las ${primeraHora}. Ver Ticker (franja verde) para detalles.`;
+             avisoTexto.textContent = `⚡ ¡ATENCIÓN! Múltiples salidas especiales a las ${primeraHora}. Ver en la Parte de arriba (franja negra y naranja) para detalles.`;
         } else {
              avisoTexto.textContent = avisosActivos[0];
         }
@@ -551,6 +565,8 @@ async function cargarClimaContextual(origen) {
     const cont = document.getElementById('clima-contextual');
     if (!cont || !origen) {
         cont.style.display = 'none';
+        // Limpiar el timeout si está configurado
+        if (climaTimeout) clearTimeout(climaTimeout);
         return;
     }
 
@@ -567,6 +583,21 @@ async function cargarClimaContextual(origen) {
         "Rionegro": { temp: 19, lluvia: false, humedad: 70, viento: 10 },
         "Abejorral": { temp: 16, lluvia: true, humedad: 80, viento: 5 }
     };
+    
+    // Determinar la consulta (usar coordenadas para La Union)
+    const coord = CLIMA_COORDS[origenNormalizado];
+    let query = '';
+    let displayLocation = '';
+
+    if (coord) {
+        query = coord; // Usar coordenadas para La Union, Antioquia
+        displayLocation = origenNormalizado.replace(/Term\./g, 'Term. ');
+    } else {
+        const ciudadPrincipal = CLIMA_MAPPINGS[origenNormalizado] || CLIMA_MAPPINGS.default;
+        query = encodeURIComponent(ciudadPrincipal + ', Colombia');
+        displayLocation = ciudadPrincipal;
+    }
+
 
     try {
         // Verificar cache (20 minutos)
@@ -575,17 +606,13 @@ async function cargarClimaContextual(origen) {
             console.log("✅ Usando cache de clima (20 min)");
             return;
         }
-
-        // Determinar ciudad para búsqueda
-        const ciudadPrincipal = CLIMA_MAPPINGS[origenNormalizado] || CLIMA_MAPPINGS.default;
-        const ciudadCodificada = encodeURIComponent(ciudadPrincipal + ', Colombia');
         
         // Hacer solicitud con timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         
         const response = await fetch(
-            `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${ciudadCodificada}&lang=es`,
+            `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${query}&lang=es`,
             { signal: controller.signal }
         );
         
@@ -616,7 +643,7 @@ async function cargarClimaContextual(origen) {
                     <span>💧 ${humedad}%</span>
                     <span>💨 ${viento}km/h</span>
                 </div>
-                <div class="clima-ubicacion">${data.location.name}</div>
+                <div class="clima-ubicacion">${displayLocation}</div>
                 <div class="clima-actualizado">🕒 ${new Date().toLocaleTimeString()}</div>
             </div>
         `;
@@ -648,6 +675,16 @@ async function cargarClimaContextual(origen) {
     
     cont.style.display = 'block';
     ultimaActualizacionClima = Date.now();
+    
+    // ===================================
+    // LÓGICA DE OCULTAMIENTO DEL CLIMA (2 minutos)
+    // ===================================
+    if (climaTimeout) clearTimeout(climaTimeout);
+    climaTimeout = setTimeout(() => {
+        cont.style.display = 'none';
+        console.log("🌦️ Clima ocultado después de 2 minutos.");
+    }, 120000); // 2 minutos = 120000 ms
+    // ===================================
 }
 
 // ========== INICIALIZACIÓN DEL CLIMA CADA 20 MINUTOS ==========
