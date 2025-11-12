@@ -4,6 +4,7 @@ let ultimaActualizacionClima = 0;
 let intervaloClima = null;
 let climaTimeout = null; // Variable para controlar el timeout de ocultamiento
 let lastCriticalTurnoId = null; // Para evitar reproducir el mismo sonido de alerta por segundo
+let lastSpokenText = ''; // Para evitar que la voz repita el mismo mensaje en cada ciclo
 
 // Objetos de Audio para diferentes eventos (Asumiendo assets/attention.mp3, assets/special.mp3, assets/bip.mp3)
 const attentionSound = new Audio('assets/attention.mp3'); // Para la ventana de 15-11 min
@@ -107,11 +108,11 @@ const horariosEspeciales = {
         { hora: "13:10", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "13:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "14:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "15:10", mensaje: "Ruta a La Unión", destino: "La Union" },
+        { hora: "15:10", mensaje: "Ruta a La Unión", destino: "La Unión" },
         { hora: "15:30", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "15:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:10", mensaje: "Las Lomitas-El Tabor-La Pastora-El Alto", destino: "La Union" },
+        { hora: "16:10", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:40", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "17:00", mensaje: "Ruta a La Unión", destino: "La Union" },
@@ -134,7 +135,7 @@ const horariosEspeciales = {
         { hora: "13:50", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
         { hora: "14:10", mensaje: "Ruta a Abejorral por Mesopotamia", destino: "Abejorral", via: "Mesopotamia" },
         { hora: "14:50", mensaje: "Ruta a Abejorral por el Guaico", destino: "Abejorral", via: "Guaico" },
-        { hora: "15:20", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
+        { hora: "15:20", mensaje: " Abordar con Antelacion", destino: "Abejorral", via: "Colmenas" },
         { hora: "16:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
         { hora: "17:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
         { hora: "18:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
@@ -145,7 +146,7 @@ const horariosEspeciales = {
         { hora: "14:05", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
-        { hora: "16:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Norte", via: "San Antonio" },
+        { hora: "16:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "17:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "16:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "16:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
@@ -171,42 +172,42 @@ const horariosEspeciales = {
         { hora: "07:30", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
         { hora: "08:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
         { hora: "08:20", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "09:00", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "09:20", mensaje: "Medellín Norte (Conexión en La Ceja)", destino: "Medellin Term.Norte", via: "Conexión en La Ceja" },
-        { hora: "10:00", mensaje: "Rionegro", destino: "Rionegro" },
+        { hora: "09:00", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "09:20", mensaje: "Medellín Norte (Conexión en La Ceja)", destino: "La Ceja",},
+        { hora: "10:00", mensaje: "Rionegro", destino: "La Ceja" },
         { hora: "10:30", mensaje: "Medellín Norte (Conexión en La Ceja)", destino: "Medellin Term.Norte", via: "Conexión en La Ceja" },
-        { hora: "11:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "11:15", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "11:30", mensaje: "Medellín Sur", destino: "Medellin Term.Sur" },
-        { hora: "11:45", mensaje: "con destino a Rionegro", destino: "Rionegro" }, // Cambié destino a Rionegro para simplificar
+        { hora: "11:00", mensaje: "Medellín Norte", destino: "La Ceja" },
+        { hora: "11:15", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "11:30", mensaje: "Medellín Sur", destino: "La Ceja" },
+        { hora: "11:45", mensaje: "con destino a Rionegro", destino: "La Ceja" }, // Cambié destino a Rionegro para simplificar
         
         { hora: "12:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte"}, // OK: Coincide con el turno Vehículo 6
         
         // CORRECCIÓN APLICADA AQUÍ: El turno 147 va a 'La Ceja' (en la DB), no a 'Medellin Term.Norte'.
         { hora: "12:20", mensaje: "Ruta Hacia La Ceja (Vehículo de conexión)", destino: "La Ceja"}, 
         
-        { hora: "12:40", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "13:00", mensaje: "Rionegro", destino: "Rionegro" },
+        { hora: "12:40", mensaje: "La Ceja", destino: "Rionegro" },
+        { hora: "13:00", mensaje: "Rionegro", destino: "La Ceja" },
         { hora: "13:20", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "13:40", mensaje: "Rionegro", destino: "Rionegro" },
+        { hora: "13:40", mensaje: " y Rionegro", destino: "La Ceja" },
         { hora: "14:00", mensaje: "La Ceja", destino: "La Ceja" },
-        { hora: "14:20", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "14:40", mensaje: "La Ceja", destino: "La Ceja" },
-        { hora: "15:00", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "15:30", mensaje: "Medellín Sur", destino: "Medellin Term.Sur" },
-        { hora: "16:00", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "16:10", mensaje: "La Ceja", destino: "La Ceja" },
-        { hora: "16:20", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "16:45", mensaje: "Rionegro", destino: "Rionegro" },
+        { hora: "14:20", mensaje: "Medellín Norte", destino: "La Ceja" },
+        { hora: "14:40", mensaje: "  ", destino: "La Ceja" },
+        { hora: "15:00", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "15:30", mensaje: "Medellín Sur", destino: "La Ceja" },
+        { hora: "16:00", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "16:10", mensaje: "  ", destino: "La Ceja" },
+        { hora: "16:20", mensaje: "Medellín Norte", destino: "La Ceja" },
+        { hora: "16:45", mensaje: "La Ceja", destino: "Rionegro" },
         { hora: "17:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
         { hora: "17:10", mensaje: "La Ceja", destino: "La Ceja" },
         { hora: "17:20", mensaje: "La Ceja", destino: "La Ceja" },
-        { hora: "17:30", mensaje: "Rionegro", destino: "Rionegro" },
+        { hora: "17:30", mensaje: "Rionegro", destino: "La Ceja" },
         { hora: "17:45", mensaje: "La Ceja", destino: "La Ceja" },
-        { hora: "18:00", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "18:20", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "19:00", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "19:20", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" }
+        { hora: "18:00", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "18:20", mensaje: "Medellín Norte", destino: "La Ceja" },
+        { hora: "19:00", mensaje: "Rionegro", destino: "La Ceja" },
+        { hora: "19:20", mensaje: "Medellín Norte", destino: "La Ceja" }
     ],
     "Rionegro": [
         // Las rutas a La Ceja/La Union que pasan por La Ceja como punto intermedio
@@ -228,7 +229,7 @@ const horariosEspeciales = {
         { hora: "11:30", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "12:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "13:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "13:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
+        { hora: "13:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "14:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
         { hora: "14:00", mensaje: "ruta hacia la Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
         { hora: "15:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
@@ -381,6 +382,64 @@ function playCriticalSound(currentTurnoId, audioObject) {
     });
 }
 
+// ===================================
+// FUNCIÓN PARA SÍNTESIS DE VOZ
+// ===================================
+function speak(text, rate = 1.0, pitch = 1.0) {
+    if (!audioUnlocked) {
+        console.log("🗣️ Voz bloqueada. Requiere interacción del usuario.");
+        return;
+    }
+    
+    // Evitar repeticiones en el mismo ciclo del ticker (30 segundos)
+    if (text === lastSpokenText) {
+        return;
+    }
+
+    // Limpiar cualquier voz que se esté reproduciendo
+    if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // ==============================================================
+    // LÓGICA MEJORADA DE SELECCIÓN DE VOZ (Para mayor naturalidad)
+    // ==============================================================
+    const voices = window.speechSynthesis.getVoices();
+    let selectedVoice = null;
+    
+    // 1. Buscar la voz más natural (Microsoft Raul o Helena son buenas opciones)
+    const preferredVoices = ['Microsoft Raul - Spanish (Mexico)', 'Microsoft Helena - Spanish (Spain)', 'Google Spanish'];
+    
+    // 2. Intentar encontrar una voz de la lista de preferidas
+    selectedVoice = voices.find(voice => 
+        preferredVoices.some(pref => voice.name.includes(pref)) || voice.lang.startsWith('es')
+    );
+    
+    // 3. Si se encuentra, usarla
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log(`🗣️ Usando voz: ${selectedVoice.name}`);
+    } else {
+        // Fallback: usar la primera voz en español que encuentre
+        selectedVoice = voices.find(voice => voice.lang.startsWith('es'));
+        if (selectedVoice) {
+             utterance.voice = selectedVoice;
+             console.log(`🗣️ Fallback: Usando voz en español: ${selectedVoice.name}`);
+        }
+    }
+    // ==============================================================
+
+    utterance.rate = rate; // Velocidad de habla (1.0 es normal)
+    utterance.pitch = pitch; // Tono (1.0 es normal)
+    
+    window.speechSynthesis.speak(utterance);
+    lastSpokenText = text;
+    console.log(`🗣️ Leyendo: "${text}"`);
+}
+// ===================================
+
 // ========== SISTEMA DE TICKER MEJORADO CON COINCIDENCIA EXACTA ==========
 function iniciarTickerAvisos() {
     const tickerContainer = document.getElementById('ticker-avisos');
@@ -409,7 +468,6 @@ function iniciarTickerAvisos() {
     
     if (!horariosEspeciales[origenSeleccionado]) {
         console.log("❌ No hay horarios especiales para (Cleaned Key):", origenSeleccionado);
-        console.log("📝 Orígenes disponibles en horariosEspeciales:", Object.keys(horariosEspeciales));
         tickerContainer.style.display = 'none';
         avisosContainer.style.display = 'none';
         return;
@@ -423,7 +481,8 @@ function iniciarTickerAvisos() {
     
     const horariosUbicacion = horariosEspeciales[origenSeleccionado];
     let avisosActivos = [];
-    
+    let vozMessage = ''; // Variable para el mensaje de voz
+
     console.log(`⏰ Hora actual: ${horaActual} (${minutosActual} minutos)`);
     console.log(`📍 Horarios para ${origenSeleccionado}:`, horariosUbicacion.length);
     
@@ -492,29 +551,41 @@ function iniciarTickerAvisos() {
                     
                     let mensajeFormateado = `${numeroVehiculo} (${tipoVehiculo}) para las ${horaAviso}`;
                     
+                    // Construcción del mensaje para la voz (más natural)
+                    let vozTurno = `Turno de las ${horaAviso.replace(':', ' y ')}, vehículo ${numeroVehiculo}, tipo ${tipoVehiculo}, con destino ${destinoVehiculo}. ${mensaje}.`;
+                    
                     // Agregar información de destino y vía si es relevante
                     if (destinoVehiculo && viaVehiculo && viaVehiculo.trim().toLowerCase() !== "principal") {
                         mensajeFormateado += ` - ${destinoVehiculo} por ${viaVehiculo}`;
+                        vozTurno = `Turno de las ${horaAviso.replace(':', ' y ')}, vehículo ${numeroVehiculo}, tipo ${tipoVehiculo}, con destino a ${destinoVehiculo} por ${viaVehiculo}. ${mensaje}.`;
                     } else if (destinoVehiculo) {
                         mensajeFormateado += ` - ${destinoVehiculo}`;
                     }
                     
                     mensajeFormateado += ` - ${mensaje}`;
                     avisosActivos.push(mensajeFormateado);
+                    // Si es el primer aviso, guardarlo para la voz
+                    if (!vozMessage) vozMessage = vozTurno;
                 });
             } else {
                 // Si no hay vehículos específicos, mostrar mensaje general
                 let mensajeFormateado = `Vehículo por confirmar para las ${horaAviso}`;
                 
+                // Construcción del mensaje para la voz (más natural)
+                let vozTurno = `Turno por confirmar a las ${horaAviso.replace(':', ' y ')}. ${mensaje}.`;
+
                 // Agregar información de destino y vía del horario especial
                 if (destino && via) {
                     mensajeFormateado += ` - ${destino} por ${via}`;
+                    vozTurno = `Turno por confirmar a las ${horaAviso.replace(':', ' y ')}, con destino a ${destino} por ${via}. ${mensaje}.`;
                 } else if (destino) {
                     mensajeFormateado += ` - ${destino}`;
                 }
                 
                 mensajeFormateado += ` - ${mensaje}`;
                 avisosActivos.push(mensajeFormateado);
+                // Si es el primer aviso, guardarlo para la voz
+                if (!vozMessage) vozMessage = vozTurno;
             }
         }
     });
@@ -537,7 +608,9 @@ function iniciarTickerAvisos() {
         }
         
         if (avisosActivos.length > 1) {
-             avisoTexto.textContent = `⚡ ¡ATENCIÓN! Múltiples salidas especiales a las ${primeraHora}. Ver en la Parte de arriba (franja negra y naranja) para detalles.`;
+             avisoTexto.textContent = `⚡ ¡ATENCIÓN! Múltiples salidas especiales a las ${primeraHora}. Ver Pantalla mejor informacion para detalles.`;
+             // Mensaje de voz consolidado para múltiples turnos
+             vozMessage = `Alerta señor pasajero. Hay varias salidas especiales programadas para las ${primeraHora.replace(':', ' y ')}. Por favor, consulte la pantalla para los detalles.`;
         } else {
              avisoTexto.textContent = avisosActivos[0];
         }
@@ -545,17 +618,18 @@ function iniciarTickerAvisos() {
         // ===============================================
 
         // ===================================
-        // LÓGICA DE SONIDO ESPECIAL
-        // El sonido solo se reproduce la primera vez que se activa el ticker para esta hora
+        // LÓGICA DE SONIDO ESPECIAL + VOZ (Turno Especial)
         // ===================================
         const especialId = `${origenSeleccionado}-${primeraHora}-TICKER`;
-        playCriticalSound(especialId, specialSound);
+        playCriticalSound(especialId, specialSound); // Sonido de alerta
+        speak(vozMessage); // Anuncio de voz
         // ===================================
         
         console.log("✅ Ticker activado con mensajes");
     } else {
         tickerContainer.style.display = 'none';
         avisosContainer.style.display = 'none';
+        lastSpokenText = ''; // Limpiar la última voz si no hay avisos
         console.log("❌ No hay avisos activos en este momento");
     }
 }
@@ -643,7 +717,7 @@ async function cargarClimaContextual(origen) {
                     <span>💧 ${humedad}%</span>
                     <span>💨 ${viento}km/h</span>
                 </div>
-                <div class="clima-ubicacion">${displayLocation}</div>
+                <div class="clima-ubicacion">${data.location.name}</div>
                 <div class="clima-actualizado">🕒 ${new Date().toLocaleTimeString()}</div>
             </div>
         `;
