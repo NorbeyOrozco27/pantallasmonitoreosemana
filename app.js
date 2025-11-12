@@ -79,7 +79,7 @@ const horariosEspeciales = {
         { hora: "10:15", mensaje: "Ruta hacia LLanogrande San Antonio" },
         { hora: "13:30", mensaje: "Ruta hacia Abejorral" },
         { hora: "14:50", mensaje: "Ruta hacia La Union" },
-        { hora: "16:30", mensaje: "Ruta Hacia Abejorral - ultima Linea" }
+        { hora: "16:30", mensaje: "Ruta Hacia Abejorral - ultima Linea" } 
     ],
      "La Ceja": [
         { hora: "05:00", mensaje: "Medellín Sur X San Antonio LLanogrande", destino: "Medellin Term.Sur", via: "San Antonio LLanogrande" },
