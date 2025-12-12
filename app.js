@@ -921,7 +921,8 @@ function llenarFiltroOrigen() {
 
 async function obtenerRodamientoDelDia() {
     const fecha = new Date().toISOString().slice(0, 10);
-    const url = `${SUPABASE_CONFIG.url}/rest/v1/operacion_diaria?select=id,Vehículos(numero_interno),Horarios!inner(hora,origen,destino,via)&fecha=eq.${fecha}`;
+    // AGREGAMOS: hora_estimada, estado
+    const url = `${SUPABASE_CONFIG.url}/rest/v1/operacion_diaria?select=id,hora_estimada,estado,Vehículos(numero_interno),Horarios!inner(hora,origen,destino,via)&fecha=eq.${fecha}`;
     const res = await fetch(url, {
         headers: { 'apikey': SUPABASE_CONFIG.key, 'Authorization': `Bearer ${SUPABASE_CONFIG.key}` }
     });
@@ -932,120 +933,184 @@ async function obtenerRodamientoDelDia() {
 function actualizarTablaProximos() {
     const ahora = new Date();
     const ahoraSeg = ahora.getHours() * 3600 + ahora.getMinutes() * 60 + ahora.getSeconds();
+    
     const filtro = document.getElementById('filtro-origen').value;
-
-    // Normalizar el filtro para usar en la comparación
     const filtroNormalizado = normalizeOriginKey(filtro);
 
-    // Filtrar y procesar datos
+    // 1. FILTRADO
     const turnos = datosCompletosDelDia
         .filter(d => {
             if (!d.Horarios?.hora) return false;
-            // Usar el filtro normalizado para la comparación
             if (filtro && normalizeOriginKey(d.Horarios.origen) !== filtroNormalizado) return false;
             
-            const [h, m] = d.Horarios.hora.split(':');
+            const horaEfectiva = d.hora_estimada || d.Horarios.hora;
+            const [h, m] = horaEfectiva.split(':');
             const segundosTurno = parseInt(h) * 3600 + parseInt(m) * 60;
-            return segundosTurno >= ahoraSeg;
+            
+            return segundosTurno >= (ahoraSeg - 300); 
         })
         .map(d => {
-            const [h, m] = d.Horarios.hora.split(':');
+            const horaEfectiva = d.hora_estimada || d.Horarios.hora;
+            const [h, m] = horaEfectiva.split(':');
             return {
                 ...d,
                 segundos: parseInt(h) * 3600 + parseInt(m) * 60,
-                id: d.id // Usar el ID de la base de datos como ID de turno único
+                horaVisual: horaEfectiva,
+                id: d.id
             };
         })
         .sort((a, b) => a.segundos - b.segundos)
-        .slice(0, 20); // Limitar a 20 resultados
+        .slice(0, 20);
 
     const tbody = document.querySelector("#tabla-proximos tbody");
     tbody.innerHTML = '';
 
-    const turnosCriticos = turnos.filter(t => (t.segundos - ahoraSeg) / 60 <= 2);
+    // Lógica Sonidos/Clima
+    const turnosOperativos = turnos.filter(t => t.estado !== 'CANCELADO');
+    const turnosCriticos = turnosOperativos.filter(t => (t.segundos - ahoraSeg) / 60 <= 2 && (t.segundos - ahoraSeg) > -60);
     actualizarGifsContextuales(turnosCriticos);
 
-    // ===================================
-    // LÓGICA DE SONIDO CRÍTICO Y ATENCIÓN
-    // ===================================
-    const proximoTurno = turnos[0];
-    
+    const proximoTurno = turnosOperativos[0];
     if (turnosCriticos.length > 0) {
-        // 1. Sonido CRÍTICO (0-2 min)
-        const currentTurnoId = `CRITICO-${turnosCriticos[0].id}`;
-        playCriticalSound(currentTurnoId, criticalSound); // Usar el sonido crítico
+        playCriticalSound(`CRITICO-${turnosCriticos[0].id}`, criticalSound);
     } else if (proximoTurno) {
-        // 2. Sonido de ATENCIÓN (11-15 min)
         const diffMin = Math.round((proximoTurno.segundos - ahoraSeg) / 60);
-        
-        // Condición para la ventana 1 (11 a 15 min antes)
         if (diffMin >= 11 && diffMin <= 15) {
-            // Usar un ID basado en el minuto para que el sonido se active una vez por minuto
-            const attentionId = `ATENCION-${proximoTurno.id}-${Math.floor(diffMin)}`; 
-            playCriticalSound(attentionId, attentionSound); // Usar el sonido de atención
+            playCriticalSound(`ATENCION-${proximoTurno.id}-${Math.floor(diffMin)}`, attentionSound);
         } else {
-            lastCriticalTurnoId = null; // Reiniciar el último ID una vez que la alerta ha pasado
+            lastCriticalTurnoId = null;
         }
     } else {
-        lastCriticalTurnoId = null; // Reiniciar el último ID si no hay turnos próximos
+        lastCriticalTurnoId = null;
     }
-    // ===================================
 
     if (turnos.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                    No hay turnos próximos para el origen seleccionado
-                </td>
-            </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--text-secondary);">No hay turnos próximos</td></tr>`;
         return;
     }
 
+    // 2. RENDERIZADO DE FILAS
     turnos.forEach(t => {
         const diffSeg = t.segundos - ahoraSeg;
         const minRest = Math.round(diffSeg / 60);
-        const porc = Math.max(0, Math.min(100, (minRest / 60) * 100));
+        
+        // =========================================================
+        // 1. LÓGICA DE ESTADO (AHORA CON "EN PLATAFORMA")
+        // =========================================================
+        let estadoHtml = '';
+        
+        if (minRest > 10) { 
+            estadoHtml = '<span class="badge badge-proximo">PRÓXIMO</span>';
+        } else if (minRest <= 2) { 
+            // NUEVO: Si falta 2 min o menos, es ABORDAJE
+            estadoHtml = '<span class="badge badge-abordaje">EN PLATAFORMA</span>';
+        } else {
+            estadoHtml = '<span class="badge badge-atiempo">A TIEMPO</span>';
+        }
 
-        let colorBarra = "#69db7c";
-        if (minRest <= 2) colorBarra = "#ff6b6b";
-        else if (minRest <= 5) colorBarra = "#f77c08ff";
-        else if (minRest <= 10) colorBarra = "#fab005";
-        else if (minRest <= 20) colorBarra = "#ffd43b";
-        else if (minRest <= 30) colorBarra = "#38d9a9";
+        let claseFila = '';
+        const horaProgClean = t.Horarios.hora.substring(0, 5);
+        const horaEstClean = (t.hora_estimada || '').substring(0, 5);
+        
+        // Diseño Hora
+        let horaContenido = `<span class="hora-digito">${horaProgClean}</span>`;
+        if (t.estado === 'CANCELADO') {
+             estadoHtml = '<span class="badge badge-cancelado">CANCELADO</span>';
+             claseFila = 'fila-cancelada';
+             horaContenido = `<span class="hora-tachada">${horaProgClean}</span>`;
+        } 
+        else if (horaEstClean && horaEstClean !== horaProgClean) {
+            const [h1, m1] = horaProgClean.split(':').map(Number);
+            const [h2, m2] = horaEstClean.split(':').map(Number);
+            const diff = (h2 * 60 + m2) - (h1 * 60 + m1);
 
-        const esCritico = minRest <= 2;
-        const viaRaw = t.Horarios.via;
-        const via = viaRaw && viaRaw.trim().toLowerCase() !== "principal" ? viaRaw : "";
-        const tipo = vehiculosMap[t.Vehículos.numero_interno] || "Desconocido";
-        let icono = "🚌";
-        if (tipo === "Buseta") icono = "🚐";
-        else if (tipo === "Microbus") icono = "🚍";
-        else if (tipo === "Vans") icono = "🚙";
+            if (diff > 0) {
+                estadoHtml = `<span class="badge badge-retrasado">RETRASADO ${Math.abs(diff)}'</span>`;
+                horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-retraso">${horaEstClean}</span></div>`;
+            } else if (diff < 0) {
+                estadoHtml = `<span class="badge badge-adelantado">ADELANTADO ${Math.abs(diff)}'</span>`;
+                horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-adelanto">${horaEstClean}</span></div>`;
+            }
+        }
 
-        const [h, m] = t.Horarios.hora.split(':');
-        const iconoHora = getIconoReloj(parseInt(h));
-        const colorMinuto = getColorPorMinuto(parseInt(m));
+        const horaDisplayHTML = `<div class="hora-badge"><i class="fa-regular fa-clock"></i>${horaContenido}</div>`;
+
+        // Diseño Vehículo
+        const tipo = vehiculosMap[t.Vehículos.numero_interno] || "Vehículo";
+        let iconoVeh = "🚌";
+        if (tipo === "Buseta") iconoVeh = "🚐"; else if (tipo === "Microbus") iconoVeh = "🚍"; else if (tipo === "Vans") iconoVeh = "🚙";
+
+        const vehiculoHtml = `<div class="vehiculo-chip"><span class="vehiculo-icono">${iconoVeh}</span><div class="vehiculo-info"><span class="vehiculo-num">${t.Vehículos.numero_interno}</span><span class="vehiculo-tipo">${tipo}</span></div></div>`;
+
+        // =========================================================
+        // 2. LÓGICA DE COLOR POR DESTINO
+        // =========================================================
+        let claseDestino = "dest-default";
+        const destinoUpper = t.Horarios.destino ? t.Horarios.destino.toUpperCase() : "";
+
+        if (destinoUpper.includes("MEDELLIN") || destinoUpper.includes("MEDELLÍN")) claseDestino = "dest-medellin";
+        else if (destinoUpper.includes("RIONEGRO")) claseDestino = "dest-rionegro";
+        else if (destinoUpper.includes("UNION") || destinoUpper.includes("UNIÓN")) claseDestino = "dest-launion";
+        else if (destinoUpper.includes("ABEJORRAL")) claseDestino = "dest-abejorral";
+        else if (destinoUpper.includes("CEJA")) claseDestino = "dest-laceja";
+
+        // Diseño Ruta (Aplicando la clase de color)
+        const rutaHtml = `
+            <div class="ruta-container">
+                <div class="ruta-origen-group">
+                    <i class="fa-regular fa-circle-dot ruta-icon-orig"></i>
+                    <span class="ruta-origen">${t.Horarios.origen}</span>
+                </div>
+                <i class="fa-solid fa-arrow-right-long ruta-flecha"></i>
+                <div class="ruta-destino-group">
+                    <i class="fa-solid fa-location-dot ruta-icon-dest"></i>
+                    <!-- AQUÍ SE APLICA LA CLASE DE COLOR -->
+                    <span class="ruta-destino ${claseDestino}">${t.Horarios.destino}</span>
+                </div>
+            </div>
+        `;
+
+        const viaHtml = t.Horarios.via ? `<div class="via-tag"><i class="fa-solid fa-road"></i> ${t.Horarios.via}</div>` : '';
+
+        // Barra de Tiempo
+        let celdaTiempo = '';
+        if (t.estado === 'CANCELADO') {
+            celdaTiempo = '<div style="text-align:center; color: var(--text-secondary);">--</div>';
+        } else {
+            let textoTiempo = `${minRest} min`;
+            let colorBarra = "#69db7c"; 
+
+            // Si es 2 min o menos, activa la cinta verde
+            if (minRest <= 2) {
+                textoTiempo = "SALIENDO...";
+                colorBarra = "#ff6b6b"; 
+                claseFila += ' fila-saliendo'; 
+            }
+            else if (minRest <= 5) colorBarra = "#f77c08"; 
+            else if (minRest <= 10) colorBarra = "#fab005"; 
+            else colorBarra = "#2d8cff";
+
+            const porc = Math.max(0, Math.min(100, (minRest / 60) * 100));
+            if (minRest > 60) {
+                const hRest = Math.floor(minRest / 60);
+                const mRest = minRest % 60;
+                textoTiempo = `${hRest}h ${mRest}m`;
+            }
+
+            celdaTiempo = `<div class="barra-progreso-container"><div class="barra-progreso" style="width: ${porc}%; background-color: ${colorBarra};"></div></div><span class="etiqueta-tiempo" style="${minRest <= 2 ? 'color: #69db7c; font-weight:900;' : ''}">${textoTiempo}</span>`;
+        }
 
         tbody.innerHTML += `
-            <tr class="${esCritico ? 'fila-parpadeante' : ''}">
-                <td>${iconoHora} ${t.Horarios.hora} <span style="margin-left: 6px;">${colorMinuto}</span></td>
-                <td>${icono} ${t.Vehículos.numero_interno} (${tipo})</td>
-                <td>${t.Horarios.origen} → ${t.Horarios.destino}</td>
-                <td>${via}</td>
-                <td class="tiempo-cell">
-                    <div class="barra-progreso-container">
-                        <div class="barra-progreso" style="width: ${porc}%; background-color: ${colorBarra};${esCritico ? ' animation: brillo-lateral 1s ease-in-out infinite;' : ''}"></div>
-                    </div>
-                    <span class="etiqueta-tiempo">${minRest} min</span>
-                </td>
+            <tr class="${claseFila}">
+                <td>${horaDisplayHTML}</td>
+                <td>${vehiculoHtml}</td>
+                <td>${rutaHtml}</td>
+                <td style="text-align: center;">${estadoHtml}</td>
+                <td>${viaHtml}</td>
+                <td class="tiempo-cell">${celdaTiempo}</td>
             </tr>`;
     });
-
-    const hayCritico = turnos.some(t => (t.segundos - ahoraSeg) / 60 <= 2);
-    document.getElementById('clima-contextual').style.display = hayCritico ? 'none' : 'block';
 }
-
 // ========== TOASTS ==========
 function showToast(title, msg, type = 'info') {
     const id = 'toast-' + Date.now();

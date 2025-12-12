@@ -672,6 +672,10 @@ body {
     min-width: 160px;
   }
 }
+/* ======================================================
+   AQUÍ TERMINAN LOS ESTILOS DE CELULAR (MEDIA QUERY)
+   Asegúrate de copiar este bloque con cuidado
+   ====================================================== */
 
 @media (max-width: 768px) {
   body {
@@ -729,4 +733,388 @@ body {
     max-width: 100%;
     min-width: auto;
   }
+
+  /* Ajustes específicos para móviles */
+  .badge {
+      padding: 4px 8px;
+      min-width: auto;
+  }
+
+  .hora-normal {
+      font-size: 1.1em;
+  }
+} /* <--- ¡ESTA LLAVE ES IMPORTANTE! CIERRA EL MODO CELULAR AQUÍ */
+
+
+/* =======================================================
+   ESTILOS GLOBALES (AHORA SÍ FUERA DEL MEDIA QUERY)
+   Estos aplicarán tanto en PC como en celular
+   ======================================================= */
+
+/* --- 1. COLUMNA RUTA --- */
+.ruta-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Lato', sans-serif;
+}
+
+.ruta-origen {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.ruta-flecha {
+    color: var(--accent-color);
+    font-size: 0.9em;
+    opacity: 0.8;
+    transform: translateY(1px);
+}
+
+.ruta-destino {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1.15em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.5px;
+}
+
+/* --- 2. COLUMNA VÍA --- */
+.via-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(45, 140, 255, 0.1);
+    border: 1px solid rgba(45, 140, 255, 0.2);
+    color: #a3c7e3;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.via-tag i {
+    font-size: 0.8em;
+    color: var(--accent-color);
+}
+
+/* --- 3. ESTADOS (A TIEMPO / PRÓXIMO) --- */
+
+/* ESTADO PRÓXIMO (> 10 min) - Gris Moderno */
+.badge-proximo {
+    background-color: rgba(108, 117, 125, 0.15) !important;
+    border: 1px solid rgba(108, 117, 125, 0.4) !important;
+    color: #ced4da;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-proximo::before {
+    content: '\f017'; /* Icono reloj */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.9em;
+    color: #adb5bd;
+}
+
+/* ESTADO A TIEMPO (<= 10 min) - Verde Neón */
+.badge-atiempo {
+    background-color: rgba(32, 201, 151, 0.15) !important;
+    color: #20c997;
+    border: 1px solid #20c997 !important;
+    box-shadow: 0 0 12px rgba(32, 201, 151, 0.25);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.badge-atiempo::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #20c997;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #20c997;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Otros Estados */
+.badge-retrasado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.badge-adelantado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(77, 171, 247, 0.15);
+    color: #4dabf7;
+    border: 1px solid #4dabf7;
+}
+
+.badge-cancelado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #868e96;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+}
+/* =========================================
+   NUEVOS ESTILOS: HORA, VEHÍCULO, ORIGEN
+   ========================================= */
+
+/* --- 1. ESTILO HORA DIGITAL --- */
+.hora-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Fondo muy sutil */
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-color); /* Línea azul a la izquierda */
+    width: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.hora-badge i {
+    color: var(--accent-color);
+    font-size: 1.1em;
+}
+
+.hora-digito {
+    font-family: 'Share Tech Mono', monospace; /* Fuente estilo reloj digital */
+    font-size: 1.35em;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+/* Variaciones para retraso/adelanto */
+.hora-cambio {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.hora-tachada-mini {
+    text-decoration: line-through;
+    font-size: 0.75em;
+    color: #6c757d;
+}
+
+.hora-retraso {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+.hora-adelanto {
+    color: #4dabf7;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+.hora-tachada {
+    text-decoration: line-through;
+    color: #6c757d;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+/* --- 2. ESTILO VEHÍCULO (CHIP) --- */
+.vehiculo-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #162436, #1f3a58);
+    border: 1px solid #2a4466;
+    padding: 6px 14px;
+    border-radius: 12px; /* Más redondeado */
+    width: fit-content;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+tr:hover .vehiculo-chip {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.vehiculo-icono {
+    font-size: 1.5em;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+}
+
+.vehiculo-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.vehiculo-num {
+    font-weight: 800;
+    font-size: 1.3em;
+    color: #ffffff;
+    font-family: 'Lato', sans-serif;
+}
+
+.vehiculo-tipo {
+    font-size: 0.75em;
+    color: #a3c7e3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- 3. ESTILO RUTA MEJORADO (ORIGEN DESTACADO) --- */
+.ruta-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Más separación */
+}
+
+.ruta-origen-group, .ruta-destino-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ruta-icon-orig {
+    font-size: 0.8em;
+    color: #a3c7e3; /* Color suave para origen */
+}
+
+.ruta-origen {
+    font-weight: 600; /* Un poco más grueso */
+    color: #d0e1f0;   /* Blanco azulado, más visible que antes */
+    font-size: 1em;
+}
+
+.ruta-flecha {
+    color: var(--accent-color);
+    font-size: 0.9em;
+    opacity: 0.6;
+}
+
+.ruta-icon-dest {
+    font-size: 0.9em;
+    color: #fff;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.4));
+}
+
+.ruta-destino {
+    font-weight: 800;
+    color: #fff;
+    font-size: 1.2em;
+    text-shadow: 0 0 10px rgba(45, 140, 255, 0.3);
+}
+
+/* Ajuste de alineación para la celda de Vía */
+.via-tag i {
+    margin-right: 4px;
+}
+/* =========================================
+   NUEVOS ESTILOS: ESTADO ABORDAJE Y COLORES DESTINO
+   ========================================= */
+
+/* --- 1. BADGE "EN PLATAFORMA" (Urgente) --- */
+.badge-abordaje {
+    background-color: rgba(0, 255, 136, 0.25) !important; /* Fondo Verde Matrix */
+    color: #ffffff;
+    border: 1px solid #00ff88 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 900;
+    text-transform: uppercase;
+    animation: pulse-green-border 1.5s infinite alternate;
+}
+
+.badge-abordaje::before {
+    content: '\f2f6'; /* Icono de usuario/pasajero o puerta */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1em;
+    margin-right: 4px;
+}
+
+@keyframes pulse-green-border {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); border-color: rgba(0, 255, 136, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); border-color: #00ff88; }
+}
+
+/* --- 2. COLORES DINÁMICOS PARA DESTINOS --- */
+
+/* Medellin (Azul/Cian) */
+.dest-medellin {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+/* Rionegro (Naranja/Ámbar) */
+.dest-rionegro {
+    color: #ffaa00 !important;
+    text-shadow: 0 0 10px rgba(255, 170, 0, 0.6);
+}
+
+/* La Unión (Morado/Magenta) */
+.dest-launion {
+    color: #e056fd !important; /* Fuscia */
+    text-shadow: 0 0 10px rgba(224, 86, 253, 0.6);
+}
+
+/* Abejorral (Verde Lima) */
+.dest-abejorral {
+    color: #badc58 !important;
+    text-shadow: 0 0 10px rgba(186, 220, 88, 0.6);
+}
+
+/* La Ceja (Blanco Brillante) - O el color que prefieras */
+.dest-laceja {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Default (Gris azulado claro) */
+.dest-default {
+    color: #dbe4ff !important;
 }
