@@ -109,7 +109,6 @@ const horariosEspeciales = {
         { hora: "13:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "14:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "15:10", mensaje: "Ruta a La Unión", destino: "La Unión" },
-        { hora: "15:30", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "15:50", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:00", mensaje: "Ruta a La Unión", destino: "La Union" },
         { hora: "16:10", mensaje: "Ruta a La Unión", destino: "La Union" },
@@ -1082,7 +1081,7 @@ function actualizarTablaProximos() {
 
             // Si es 2 min o menos, activa la cinta verde
             if (minRest <= 2) {
-                textoTiempo = "SALIENDO...";
+                textoTiempo = " ";
                 colorBarra = "#ff6b6b"; 
                 claseFila += ' fila-saliendo'; 
             }
