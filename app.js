@@ -145,7 +145,7 @@ const horariosEspeciales = {
         { hora: "14:05", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
-        { hora: "16:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
+        { hora: "16:00", mensaje: " ", destino: "Medellin Term. Norte", via: "San Antonio" },
         { hora: "17:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "16:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "16:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
@@ -946,7 +946,7 @@ function actualizarTablaProximos() {
             const [h, m] = horaEfectiva.split(':');
             const segundosTurno = parseInt(h) * 3600 + parseInt(m) * 60;
             
-            return segundosTurno >= (ahoraSeg - 300); 
+            return segundosTurno >= (ahoraSeg - 60); 
         })
         .map(d => {
             const horaEfectiva = d.hora_estimada || d.Horarios.hora;
