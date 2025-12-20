@@ -29,11 +29,11 @@ const vehiculosMap = {
   121: "Buseta", 122: "Bus", 123: "Bus", 124: "Buseta", 125: "Bus",
   126: "Bus", 127: "Bus", 128: "Buseta", 129: "Bus", 130: "Bus",
   131: "Bus", 132: "Bus", 133: "Buseta", 134: "Buseta", 135: "Bus",
-  136: "Bus", 137: "Bus", 138: "Buseta", 139: "Bus", 140: "Buseta",
+  136: "Bus", 137: "Bus", 138: "Bus", 139: "Bus", 140: "Buseta",
   141: "Buseta", 142: "Buseta", 143: "Buseta", 144: "Bus", 145: "Bus",
   146: "Bus", 147: "Bus", 148: "Buseta", 149: "Buseta", 150: "Buseta",
   151: "Microbus", 152: "Microbus", 153: "Microbus", 154: "Microbus", 155: "Microbus",
-  156: "Microbus", 157: "Buseta", 158: "Microbus", 159: "Microbus", 160: "Microbus",
+  156: "Microbus", 157: "Bus", 158: "Microbus", 159: "Microbus", 160: "Microbus",
   161: "Microbus", 162: "Microbus", 163: "Microbus", 164: "Microbus", 165: "Microbus",
   166: "Microbus", 167: "Microbus", 168: "Microbus", 169: "Buseta", 170: "Microbus",
   171: "Bus", 172: "Microbus", 173: "Bus", 174: "Bus", 175: "Bus",
@@ -41,32 +41,32 @@ const vehiculosMap = {
   181: "Microbus", 182: "Microbus", 183: "Microbus", 184: "Buseta", 185: "Microbus",
   186: "Microbus", 187: "Microbus", 188: "Microbus", 189: "Microbus", 190: "Microbus",
   191: "Microbus", 192: "Microbus", 193: "Microbus", 194: "Microbus", 195: "Microbus",
-  196: "Microbus", 197: "Bus", 198: "Microbus", 2: "Vans", 3: "Vans", 4: "Vans"
+  196: "Microbus", 197: "Bus", 198: "Microbus",1: "Vans", 2: "Vans", 3: "Vans", 4: "Vans", 4: "Vans", 5: "Vans", 7: "Vans", 8: "Vans", 9: "Vans"
 };
 
 // ========== HORARIOS ESPECIALES CORREGIDOS - NOMBRES EXACTOS DE LA BD Y AJUSTADOS PARA COINCIDENCIA ==========
 const horariosEspeciales = {
     "Medellin Term.Norte": [
         { hora: "05:20", mensaje: "Conexion a Los Municipios de La Ceja y La Union con ruta hacia Abejorral x Mesopotamia" },
-        { hora: "05:40", mensaje: "Ruta hacia Abejorral por el Guaico" },
-        { hora: "05:50", mensaje: "Ruta hacia el municipío de La Union" },
-        { hora: "06:00", mensaje: "Ruta hacia Abejorral x Colmenas" },
-        { hora: "06:15", mensaje: "Ruta por el tunel de oriente, aeropuerto JMC, LLanogrande, San Antonio" },
+        { hora: "05:36", mensaje: "Ruta hacia Abejorral por el Guaico" },
+        { hora: "05:48", mensaje: "Ruta hacia La Union" },
+        { hora: "06:00", mensaje: "Ruta hacia Abejorral por Colmenas" },
+        { hora: "06:15", mensaje: "Ruta por el tunel de oriente, aeropuerto Jose Maria Cordoba, LLanogrande, San Antonio" },
         { hora: "06:20", mensaje: "Ruta Hacia La Union" },
-        { hora: "08:00", mensaje: "Ruta Hacia Colmenas" },
+        { hora: "08:00", mensaje: "Ruta Hacia Abejorral por Colmenas" },
         { hora: "09:20", mensaje: "Ruta hacia La Union" },
         { hora: "10:00", mensaje: "Ruta Hacia Abejorral colmenas y Pantanillo" },
         { hora: "11:20", mensaje: "Ruta Hacia la Union" },
-        { hora: "12:00", mensaje: "ruta hacia Abejorral colmenas" },
+        { hora: "12:00", mensaje: "Ruta hacia Abejorral por Colmenas" },
         { hora: "12:20", mensaje: "Conexion a Los Municipios de La Ceja y La Union con ruta hacia Abejorral x Mesopotamia" },
         { hora: "13:00", mensaje: "Ruta Abejorral Por el Guaico" },
         { hora: "13:20", mensaje: "Ruta hacia La Union" },
-        { hora: "14:20", mensaje: "ruta hacia La Union" },
-        { hora: "14:40", mensaje: "Ruta hacia abejorral" },
+        { hora: "14:20", mensaje: "Ruta hacia La Union" },
+        { hora: "14:40", mensaje: "Ruta hacia Abejorral por Colmenas" },
         { hora: "15:20", mensaje: "Ruta hacia la Union" },
-        { hora: "15:40", mensaje: "ruta hacia Abejorral" },
-        { hora: "17:00", mensaje: "ruta hacia la Union" },
-        { hora: "18:00", mensaje: "ruta hacia la Union" }
+        { hora: "15:40", mensaje: "Ruta hacia Abejorral--Ultima Linea del dia, abordar con antelacion" },
+        { hora: "17:00", mensaje: "Ruta hacia la Union" },
+        { hora: "18:00", mensaje: "Ruta hacia la Union" }
     ],
     "Medellin Term.Sur": [
         { hora: "04:50", mensaje: "ruta hacia Abejorral" },
@@ -87,11 +87,11 @@ const horariosEspeciales = {
         { hora: "05:45", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "06:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
         { hora: "06:00", mensaje: "Medellín Norte Tunel de Oriente", destino: "Medellin Term.Norte", via: "Tunel de Oriente" },
-        { hora: "06:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "06:15", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "06:20", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "06:40", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "07:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "06:00", mensaje: "", destino: "La Union" },
+        { hora: "06:15", mensaje: "", destino: "La Union" },
+        { hora: "06:20", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "06:40", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "07:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "07:20", mensaje: "", destino: "La Union" },
         { hora: "07:40", mensaje: " ", destino: "La Union" },
         { hora: "07:50", mensaje: " ", destino: "La Union" },
@@ -101,57 +101,57 @@ const horariosEspeciales = {
         { hora: "10:00", mensaje: " ", destino: "La Union" },
         { hora: "10:50", mensaje: " ", destino: "La Union" },
         { hora: "11:10", mensaje: " ", destino: "La Union" },
-        { hora: "11:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "12:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "12:20", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "12:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "13:10", mensaje: "Ruta a La Unión", destino: "La Union" },
+        { hora: "11:50", mensaje: "", destino: "La Union" },
+        { hora: "12:00", mensaje: "", destino: "La Union" },
+        { hora: "12:20", mensaje: " ", destino: "La Union" },
+        { hora: "12:50", mensaje: " ", destino: "La Union" },
+        { hora: "13:10", mensaje: "", destino: "La Union" },
         { hora: "13:50", mensaje: "", destino: "La Union" },
-        { hora: "14:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "15:10", mensaje: "Ruta a La Unión", destino: "La Unión" },
-        { hora: "15:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:10", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:40", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "16:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "17:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "17:10", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "18:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "18:30", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "18:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "19:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "19:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "20:00", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "20:50", mensaje: "Ruta a La Unión", destino: "La Union" },
-        { hora: "06:40", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "07:10", mensaje: "Ruta a Abejorral por Mesopotamia", destino: "Abejorral", via: "Mesopotamia" },
-        { hora: "07:30", mensaje: "Ruta a Abejorral por el Guaico", destino: "Abejorral", via: "Guaico" },
-        { hora: "07:50", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "09:00", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "09:50", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "11:00", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
+        { hora: "14:50", mensaje: " ", destino: "La Union" },
+        { hora: "15:10", mensaje: "", destino: "La Unión" },
+        { hora: "15:50", mensaje: "", destino: "La Union" },
+        { hora: "16:00", mensaje: "", destino: "La Union" },
+        { hora: "16:10", mensaje: " ", destino: "La Union" },
+        { hora: "16:40", mensaje: "", destino: "La Unión" },
+        { hora: "16:50", mensaje: "", destino: "La Unión" },
+        { hora: "17:00", mensaje: " ", destino: "La Union" },
+        { hora: "17:10", mensaje: " ", destino: "La Union" },
+        { hora: "18:00", mensaje: " ", destino: "La Union" },
+        { hora: "18:30", mensaje: " ", destino: "La Union" },
+        { hora: "18:50", mensaje: " ", destino: "La Union" },
+        { hora: "19:00", mensaje: " ", destino: "La Union" },
+        { hora: "19:50", mensaje: " ", destino: "La Union" },
+        { hora: "20:00", mensaje: " ", destino: "La Union" },
+        { hora: "20:50", mensaje: " ", destino: "La Union" },
+        { hora: "06:40", mensaje: "", destino: "Abejorral", via: "Colmenas" },
+        { hora: "07:10", mensaje: " ", destino: "Abejorral", via: "Mesopotamia" },
+        { hora: "07:30", mensaje: " ", destino: "Abejorral", via: "Guaico" },
+        { hora: "07:50", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
+        { hora: "09:00", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
+        { hora: "09:50", mensaje: "", destino: "Abejorral", via: "Colmenas" },
+        { hora: "11:00", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
         { hora: "11:50", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
         { hora: "13:50", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
-        { hora: "14:10", mensaje: "Ruta a Abejorral por Mesopotamia", destino: "Abejorral", via: "Mesopotamia" },
-        { hora: "14:50", mensaje: "Ruta a Abejorral por el Guaico", destino: "Abejorral", via: "El Guaico" },
+        { hora: "14:10", mensaje: " ", destino: "Abejorral", via: "Mesopotamia" },
+        { hora: "14:50", mensaje: " ", destino: "Abejorral", via: "El Guaico" },
         { hora: "15:20", mensaje: " Abordar con Antelacion", destino: "Abejorral", via: "Colmenas" },
-        { hora: "16:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "17:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "18:30", mensaje: "Ruta a Abejorral por Colmenas", destino: "Abejorral", via: "Colmenas" },
-        { hora: "07:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "09:40", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "16:30", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
+        { hora: "17:30", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
+        { hora: "18:30", mensaje: " ", destino: "Abejorral", via: "Colmenas" },
+        { hora: "07:30", mensaje: " ", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "09:40", mensaje: " ", destino: "Rionegro", via: "Pontezuela" },
         { hora: "11:20", mensaje: " ", destino: "Rionegro", via: "Pontezuela" },
         { hora: "12:40", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "14:05", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "15:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
+        { hora: "15:00", mensaje: " ", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "16:00", mensaje: " ", destino: "Medellin Term. Norte", via: "San Antonio" },
-        { hora: "17:00", mensaje: "Medellín Sur X San Antonio", destino: "Medellin Term.Sur", via: "San Antonio" },
-        { hora: "16:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "16:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "17:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "17:30", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" },
-        { hora: "18:00", mensaje: "Rionegro por Pontezuela", destino: "Rionegro", via: "Pontezuela" }
+        { hora: "17:00", mensaje: " ", destino: "Medellin Term.Su", via: "San Antonio" },
+        { hora: "16:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "16:30", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "17:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "17:30", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
+        { hora: "18:00", mensaje: "Ultimo Vehiculo por Pontezuela", destino: "Rionegro", via: "Pontezuela" }
     ],
     // ======================================
     // HORARIOS LA UNION (NUEVOS)
@@ -160,30 +160,30 @@ const horariosEspeciales = {
         // Rutas que pasan por La Ceja/Rionegro o Medellín
         { hora: "05:00", mensaje: "Ruta Vía La Ceja - Rionegro", destino: "Rionegro", via: "Vía La Ceja" },
         { hora: "05:15", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "05:30", mensaje: "Medellín Sur (Vía La Ceja)", destino: "Medellin Term.Sur", via: "Vía La Ceja" },
+        { hora: "05:30", mensaje: "", destino: "Medellin Term.Sur", via: "La Ceja" },
         { hora: "05:40", mensaje: "Rionegro (Vía La Ceja)", destino: "Rionegro", via: "Vía La Ceja" },
-        { hora: "05:55", mensaje: "Rionegro por Variante", destino: "Rionegro", via: "Variante" },
-        { hora: "06:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "06:20", mensaje: "Rionegro (Vía La Ceja)", destino: "Rionegro", via: "Vía La Ceja" },
-        { hora: "06:40", mensaje: "Rionegro (Vía La Ceja)", destino: "Rionegro", via: "Vía La Ceja" },
-        { hora: "07:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "07:05", mensaje: "Rionegro por La Variante", destino: "Rionegro", via: "La Variante" },
-        { hora: "07:30", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "08:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte" },
-        { hora: "08:20", mensaje: "Rionegro", destino: "Rionegro" },
-        { hora: "09:00", mensaje: "Rionegro", destino: "La Ceja" },
-        { hora: "09:20", mensaje: "Medellín Norte (Conexión en La Ceja)", destino: "La Ceja",},
+        { hora: "05:55", mensaje: "No entra al Municipio de La Ceja", destino: "Rionegro", via: "Variante" },
+        { hora: "06:00", mensaje: " ", destino: "Medellin Term.Norte" },
+        { hora: "06:20", mensaje: " ", destino: "Rionegro", via: "La Ceja" },
+        { hora: "06:40", mensaje: " ", destino: "Rionegro", via: "La Ceja" },
+        { hora: "07:00", mensaje: "Linea Fija", destino: "Medellin Term.Norte" },
+        { hora: "07:05", mensaje: "No entra al Municipio de La Ceja", destino: "Rionegro", via: "Variante" },
+        { hora: "07:30", mensaje: " ", destino: "Medellin Term.Norte" },
+        { hora: "08:00", mensaje: "Linea Fija", destino: "Medellin Term.Norte" },
+        { hora: "08:20", mensaje: " ", destino: "La Ceja" },
+        { hora: "09:00", mensaje: " ", destino: "La Ceja" },
+        { hora: "09:20", mensaje: "Medellín Norte", destino: "La Ceja",},
         { hora: "10:00", mensaje: "Rionegro", destino: "La Ceja" },
         { hora: "10:30", mensaje: "Medellín Norte (Conexión en La Ceja)", destino: "Medellin Term.Norte", via: "Conexión en La Ceja" },
         { hora: "11:00", mensaje: "Medellín Norte", destino: "La Ceja" },
         { hora: "11:15", mensaje: "Rionegro", destino: "La Ceja" },
         { hora: "11:30", mensaje: "Medellín Sur", destino: "La Ceja" },
-        { hora: "11:45", mensaje: "con destino a Rionegro", destino: "La Ceja" }, // Cambié destino a Rionegro para simplificar
+        { hora: "11:45", mensaje: "Rionegro", destino: "La Ceja" }, // Cambié destino a Rionegro para simplificar
         
         { hora: "12:00", mensaje: "Medellín Norte", destino: "Medellin Term.Norte"}, // OK: Coincide con el turno Vehículo 6
         
         // CORRECCIÓN APLICADA AQUÍ: El turno 147 va a 'La Ceja' (en la DB), no a 'Medellin Term.Norte'.
-        { hora: "12:20", mensaje: "Ruta Hacia La Ceja (Vehículo de conexión)", destino: "La Ceja"}, 
+        { hora: "12:20", mensaje: " Medellín Norte", destino: "La Ceja"}, 
         
         { hora: "12:40", mensaje: "La Ceja", destino: "Rionegro" },
         { hora: "13:00", mensaje: "Rionegro", destino: "La Ceja" },
@@ -213,41 +213,41 @@ const horariosEspeciales = {
         // DEBEN tener destino: "La Ceja" para coincidir con el registro de la DB (Rodamiento Actual)
         
         // HORARIOS CON DESTINO FINAL DENTRO DEL TRAYECTO O COINCIDENTE
-        { hora: "06:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "06:32", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido: Destino La Ceja (DB) para ruta a La Union
-        { hora: "07:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "07:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "08:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "08:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "09:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "09:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "10:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "10:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "11:00", mensaje: "Ruta Hacia La Ceja por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "11:00", mensaje: "Ruta Hacia La Union por Pontezuela (Vía La Ceja)", destino: "La Ceja", via: "Pontezuela" }, // Corregido
-        { hora: "11:30", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "12:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "13:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "13:00", mensaje: "Ruta hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "14:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "14:00", mensaje: "ruta hacia la Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "15:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "15:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
+        { hora: "06:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "06:32", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido: Destino La Ceja (DB) para ruta a La Union
+        { hora: "07:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "07:00", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "08:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "08:00", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "09:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "09:00", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "10:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "10:00", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "11:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "11:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" }, // Corregido
+        { hora: "11:30", mensaje: "Ruta Hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "12:00", mensaje: "Ruta hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "13:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "13:00", mensaje: "Ruta hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "14:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "14:00", mensaje: "Ruta hacia la Union", destino: "La Ceja" }, // Corregido
+        { hora: "15:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "15:00", mensaje: "Ruta Hacia La Union", destino: "La Ceja" }, // Corregido
         
         // Bloque de 16:00 (Caso de prueba)
         { hora: "16:00", mensaje: "Ruta Hacia La Ceja por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
         { hora: "16:00", mensaje: "Ruta Hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido (asume vía principal/vacía)
         
         // HORARIOS RESTANTES AJUSTADOS
-        { hora: "16:30", mensaje: "Ruta Hacia La Ceja por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "17:00", mensaje: "Ruta Hacia La Ceja y Luego hacia La Union", destino: "La Ceja" },
-        { hora: "17:00", mensaje: "Ruta Hacia La Ceja por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "16:30", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "17:00", mensaje: "Ruta hacia La Union", destino: "La Ceja" },
+        { hora: "17:00", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
         { hora: "17:15", mensaje: "Ruta hacia La Union por La Variante", destino: "La Union", via: "La Variante" }, // Mantiene La Union (asume registro final)
-        { hora: "17:30", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
-        { hora: "17:42", mensaje: "Linea Fija hacia La Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "18:00", mensaje: "Ruta Hacia La Ceja Por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "17:30", mensaje: " ", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "17:42", mensaje: "Linea Fija hacia La Union ", destino: "La Ceja" }, // Corregido
+        { hora: "18:00", mensaje: "  ", destino: "La Ceja", via: "Pontezuela" },
         { hora: "18:00", mensaje: "Linea Fija hacia la Union (Vía La Ceja)", destino: "La Ceja" }, // Corregido
-        { hora: "18:30", mensaje: "Ruta Hacia La Ceja por Pontezuela", destino: "La Ceja", via: "Pontezuela" },
+        { hora: "18:30", mensaje: "Ultima Ruta ", destino: "La Ceja", via: "Pontezuela" },
         { hora: "19:20", mensaje: "Linea Fija hacia La Union", destino: "La Union" }, // Mantiene La Union (asume registro final)
         { hora: "20:00", mensaje: "Ultimo Vehiculo hacia La Union", destino: "La Union" } // Mantiene La Union (asume registro final)
     ]
