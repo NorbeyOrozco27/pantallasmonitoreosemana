@@ -840,7 +840,51 @@ function unlockAudio() {
     });
 }
 // ===================================
+function alternarModoNoche() {
+    const body = document.body;
+    const btnIcon = document.querySelector('#btn-modo-noche i');
+    
+    // Alternar clase
+    body.classList.toggle('modo-noche');
+    
+    // Cambiar icono y guardar preferencia
+    if (body.classList.contains('modo-noche')) {
+        btnIcon.classList.remove('fa-moon');
+        btnIcon.classList.add('fa-sun'); // Icono de sol para volver a día
+        localStorage.setItem('modoNoche', 'activado');
+    } else {
+        btnIcon.classList.remove('fa-sun');
+        btnIcon.classList.add('fa-moon');
+        localStorage.setItem('modoNoche', 'desactivado');
+    }
+}
 
+function iniciarModoNoche() {
+    const preferenciaGuardada = localStorage.getItem('modoNoche');
+    const body = document.body;
+    const btnIcon = document.querySelector('#btn-modo-noche i');
+    
+    // Lógica Automática: Si no hay preferencia guardada, verificar hora
+    if (preferenciaGuardada === null) {
+        const ahora = new Date().getHours();
+        // Si es antes de las 6 AM o después de las 6 PM, activar modo noche
+        if (ahora >= 18 || ahora < 6) {
+            body.classList.add('modo-noche');
+            if(btnIcon) {
+                btnIcon.classList.remove('fa-moon');
+                btnIcon.classList.add('fa-sun');
+            }
+        }
+    } 
+    // Si hay preferencia manual, respetarla
+    else if (preferenciaGuardada === 'activado') {
+        body.classList.add('modo-noche');
+        if(btnIcon) {
+            btnIcon.classList.remove('fa-moon');
+            btnIcon.classList.add('fa-sun');
+        }
+    }
+}
 // ========== INICIALIZACIÓN ==========
 document.addEventListener("DOMContentLoaded", function() {
     iniciarRelojDigital();
@@ -849,6 +893,7 @@ document.addEventListener("DOMContentLoaded", function() {
     iniciarTickerAvisos();
     setInterval(iniciarTickerAvisos, 30000); // Verificar cada 30 segundos
     iniciarActualizacionClima(); // Iniciar actualización automática cada 20 min
+    iniciarModoNoche();
     
     // Escuchar el primer clic o toque para desbloquear el audio
     document.addEventListener('click', unlockAudio);
@@ -988,49 +1033,96 @@ function actualizarTablaProximos() {
         return;
     }
 
-    // 2. RENDERIZADO DE FILAS
+ // 2. RENDERIZADO DE FILAS
     turnos.forEach(t => {
         const diffSeg = t.segundos - ahoraSeg;
         const minRest = Math.round(diffSeg / 60);
-        
-        // =========================================================
-        // 1. LÓGICA DE ESTADO (AHORA CON "EN PLATAFORMA")
-        // =========================================================
-        let estadoHtml = '';
-        
-        if (minRest > 10) { 
-            estadoHtml = '<span class="badge badge-proximo">PRÓXIMO</span>';
-        } else if (minRest <= 2) { 
-            // NUEVO: Si falta 2 min o menos, es ABORDAJE
-            estadoHtml = '<span class="badge badge-abordaje">EN PLATAFORMA</span>';
-        } else {
-            estadoHtml = '<span class="badge badge-atiempo">A TIEMPO</span>';
-        }
 
+        // =========================================================
+        // A. REVISAR SI HAY CAMBIO MANUAL (localStorage)
+        // =========================================================
+        const overrides = JSON.parse(localStorage.getItem('estadoOverrides') || '{}');
+        const estadoManual = overrides[t.id]; // Buscamos si este ID tiene un estado forzado
+
+        let estadoHtml = '';
         let claseFila = '';
+
+        // Preparamos variables de hora para usarlas abajo
         const horaProgClean = t.Horarios.hora.substring(0, 5);
         const horaEstClean = (t.hora_estimada || '').substring(0, 5);
-        
-        // Diseño Hora
         let horaContenido = `<span class="hora-digito">${horaProgClean}</span>`;
-        if (t.estado === 'CANCELADO') {
-             estadoHtml = '<span class="badge badge-cancelado">CANCELADO</span>';
-             claseFila = 'fila-cancelada';
-             horaContenido = `<span class="hora-tachada">${horaProgClean}</span>`;
-        } 
-        else if (horaEstClean && horaEstClean !== horaProgClean) {
-            const [h1, m1] = horaProgClean.split(':').map(Number);
-            const [h2, m2] = horaEstClean.split(':').map(Number);
-            const diff = (h2 * 60 + m2) - (h1 * 60 + m1);
 
-            if (diff > 0) {
-                estadoHtml = `<span class="badge badge-retrasado">RETRASADO ${Math.abs(diff)}'</span>`;
-                horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-retraso">${horaEstClean}</span></div>`;
-            } else if (diff < 0) {
-                estadoHtml = `<span class="badge badge-adelantado">ADELANTADO ${Math.abs(diff)}'</span>`;
-                horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-adelanto">${horaEstClean}</span></div>`;
+      if (estadoManual) {
+            // --- CASO 1: HAY UN ESTADO MANUAL ---
+            if (estadoManual === 'EN_PLATAFORMA') {
+                 estadoHtml = '<span class="badge badge-abordaje">EN PLATAFORMA</span>';
+                 claseFila = 'fila-saliendo'; 
+            } else if (estadoManual === 'SALIENDO') {
+                 estadoHtml = '<span class="badge badge-abordaje" style="background:rgba(255, 50, 50, 0.2)!important; border-color:#ff4d4d!important; color:#ff4d4d;">SALIENDO</span>';
+                 claseFila = 'fila-saliendo';
+            } else if (estadoManual === 'RETRASADO') {
+                 estadoHtml = '<span class="badge badge-retrasado">DEMORADO</span>';
+                 horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-retraso">--:--</span></div>`;
+            } else if (estadoManual === 'CANCELADO') {
+                 estadoHtml = '<span class="badge badge-cancelado">CANCELADO</span>';
+                 claseFila = 'fila-cancelada';
+                 horaContenido = `<span class="hora-tachada">${horaProgClean}</span>`;
+            
+            // ==========================================
+            // NUEVOS ESTADOS: ADICIONALES POR DESTINO
+            // ==========================================
+            } else if (estadoManual === 'ADICIONAL_MED') {
+                 // Estilo Cyan/Azul para Medellín
+                 estadoHtml = '<span class="badge badge-adic-med">ADICIONAL MED</span>';
+                 claseFila = 'fila-adicional'; // Efecto visual opcional en la fila
+            } else if (estadoManual === 'ADICIONAL_UNION') {
+                 // Estilo Fucsia/Morado para La Unión
+                 estadoHtml = '<span class="badge badge-adic-union">ADICIONAL UNIÓN</span>';
+                 claseFila = 'fila-adicional';
+            } else if (estadoManual === 'ADICIONAL_RIO') {
+                 // Estilo Naranja para Rionegro
+                 estadoHtml = '<span class="badge badge-adic-rio">ADICIONAL RIO</span>';
+                 claseFila = 'fila-adicional';
+            } else if (estadoManual === 'ADICIONAL_ABE') {
+                 // Estilo Verde Lima para Abejorral
+                 estadoHtml = '<span class="badge badge-adic-abe">ADICIONAL ABEJ</span>';
+                 claseFila = 'fila-adicional';
+            }
+
+        } else {
+            // --- CASO 2: NO HAY MANUAL (USAR TU LÓGICA AUTOMÁTICA ORIGINAL) ---
+            
+            if (minRest > 10) { 
+                estadoHtml = '<span class="badge badge-proximo">PRÓXIMO</span>';
+            } else if (minRest <= 2) { 
+                estadoHtml = '<span class="badge badge-abordaje">EN PLATAFORMA</span>';
+            } else {
+                estadoHtml = '<span class="badge badge-atiempo">A TIEMPO</span>';
+            }
+
+            if (t.estado === 'CANCELADO') {
+                 estadoHtml = '<span class="badge badge-cancelado">CANCELADO</span>';
+                 claseFila = 'fila-cancelada';
+                 horaContenido = `<span class="hora-tachada">${horaProgClean}</span>`;
+            } 
+            else if (horaEstClean && horaEstClean !== horaProgClean) {
+                const [h1, m1] = horaProgClean.split(':').map(Number);
+                const [h2, m2] = horaEstClean.split(':').map(Number);
+                const diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+
+                if (diff > 0) {
+                    estadoHtml = `<span class="badge badge-retrasado">RETRASADO ${Math.abs(diff)}'</span>`;
+                    horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-retraso">${horaEstClean}</span></div>`;
+                } else if (diff < 0) {
+                    estadoHtml = `<span class="badge badge-adelantado">ADELANTADO ${Math.abs(diff)}'</span>`;
+                    horaContenido = `<div class="hora-cambio"><span class="hora-tachada-mini">${horaProgClean}</span><span class="hora-adelanto">${horaEstClean}</span></div>`;
+                }
             }
         }
+        
+        // =========================================================
+        // CONSTRUCCIÓN DEL HTML
+        // =========================================================
 
         const horaDisplayHTML = `<div class="hora-badge"><i class="fa-regular fa-clock"></i>${horaContenido}</div>`;
 
@@ -1041,9 +1133,7 @@ function actualizarTablaProximos() {
 
         const vehiculoHtml = `<div class="vehiculo-chip"><span class="vehiculo-icono">${iconoVeh}</span><div class="vehiculo-info"><span class="vehiculo-num">${t.Vehículos.numero_interno}</span><span class="vehiculo-tipo">${tipo}</span></div></div>`;
 
-        // =========================================================
-        // 2. LÓGICA DE COLOR POR DESTINO
-        // =========================================================
+        // Color por Destino
         let claseDestino = "dest-default";
         const destinoUpper = t.Horarios.destino ? t.Horarios.destino.toUpperCase() : "";
 
@@ -1053,7 +1143,6 @@ function actualizarTablaProximos() {
         else if (destinoUpper.includes("ABEJORRAL")) claseDestino = "dest-abejorral";
         else if (destinoUpper.includes("CEJA")) claseDestino = "dest-laceja";
 
-        // Diseño Ruta (Aplicando la clase de color)
         const rutaHtml = `
             <div class="ruta-container">
                 <div class="ruta-origen-group">
@@ -1063,7 +1152,6 @@ function actualizarTablaProximos() {
                 <i class="fa-solid fa-arrow-right-long ruta-flecha"></i>
                 <div class="ruta-destino-group">
                     <i class="fa-solid fa-location-dot ruta-icon-dest"></i>
-                    <!-- AQUÍ SE APLICA LA CLASE DE COLOR -->
                     <span class="ruta-destino ${claseDestino}">${t.Horarios.destino}</span>
                 </div>
             </div>
@@ -1071,19 +1159,20 @@ function actualizarTablaProximos() {
 
         const viaHtml = t.Horarios.via ? `<div class="via-tag"><i class="fa-solid fa-road"></i> ${t.Horarios.via}</div>` : '';
 
-        // Barra de Tiempo
+        // Barra de Tiempo (Solo si no está cancelado manual o auto)
         let celdaTiempo = '';
-        if (t.estado === 'CANCELADO') {
+        if (t.estado === 'CANCELADO' || estadoManual === 'CANCELADO') {
             celdaTiempo = '<div style="text-align:center; color: var(--text-secondary);">--</div>';
         } else {
             let textoTiempo = `${minRest} min`;
             let colorBarra = "#69db7c"; 
 
-            // Si es 2 min o menos, activa la cinta verde
-            if (minRest <= 2) {
+            // Si es 2 min o menos (o tiene estado manual urgente), activa la cinta verde/roja
+            if (minRest <= 2 || estadoManual === 'EN_PLATAFORMA' || estadoManual === 'SALIENDO') {
                 textoTiempo = " ";
                 colorBarra = "#ff6b6b"; 
-                claseFila += ' fila-saliendo'; 
+                // Aseguramos que la fila parpadee si es urgente
+                if (!claseFila.includes('fila-saliendo')) claseFila += ' fila-saliendo';
             }
             else if (minRest <= 5) colorBarra = "#f77c08"; 
             else if (minRest <= 10) colorBarra = "#fab005"; 
@@ -1098,17 +1187,27 @@ function actualizarTablaProximos() {
 
             celdaTiempo = `<div class="barra-progreso-container"><div class="barra-progreso" style="width: ${porc}%; background-color: ${colorBarra};"></div></div><span class="etiqueta-tiempo" style="${minRest <= 2 ? 'color: #69db7c; font-weight:900;' : ''}">${textoTiempo}</span>`;
         }
+        
+        // Guardamos el ID para usarlo en el onclick
+        const turnoId = t.id;
 
         tbody.innerHTML += `
             <tr class="${claseFila}">
                 <td>${horaDisplayHTML}</td>
                 <td>${vehiculoHtml}</td>
                 <td>${rutaHtml}</td>
-                <td style="text-align: center;">${estadoHtml}</td>
+                
+                <!-- AQUÍ AGREGAMOS EL EVENTO PARA DOBLE CLIC -->
+                <td style="text-align: center; cursor: pointer;" 
+                    ondblclick="abrirMenuEstado('${turnoId}')" 
+                    title="Doble clic para cambiar estado manualmente">
+                    ${estadoHtml}
+                </td>
+                
                 <td>${viaHtml}</td>
                 <td class="tiempo-cell">${celdaTiempo}</td>
             </tr>`;
-    });
+    });  
 }
 // ========== TOASTS ==========
 function showToast(title, msg, type = 'info') {
@@ -1124,3 +1223,53 @@ function showToast(title, msg, type = 'info') {
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 500);
     }, 5000);
 }
+// ===================================
+// GESTIÓN DE ESTADOS MANUALES (INTERACCIÓN)
+// ===================================
+// ===================================
+// GESTIÓN DE ESTADOS MANUALES (INTERACCIÓN) - VERSIÓN AMPLIADA
+// ===================================
+
+function abrirMenuEstado(turnoId) {
+    // 1. Preguntar al usuario (Menú ampliado)
+    const opcion = prompt(
+        "MODIFICAR ESTADO MANUALMENTE:\n" +
+        "--------------------------------\n" +
+        "1. 🟢 EN PLATAFORMA (Abordando)\n" +
+        "2. 🔴 SALIENDO (Ya se va / Urgente)\n" +
+        "3. ⚠️ DEMORADO / RETRASADO\n" +
+        "4. ❌ CANCELADO\n" +
+        "--------------------------------\n" +
+        "5. 🏙️ ADICIONAL MEDELLÍN\n" +
+        "6. 🍇 ADICIONAL LA UNIÓN\n" +
+        "7. ✈️ ADICIONAL RIONEGRO\n" +
+        "8. ⛰️ ADICIONAL ABEJORRAL\n" +
+        "--------------------------------\n" +
+        "0. 🔄 RESTAURAR (Volver a automático)\n\n" +
+        "Escribe el número de la opción:"
+    );
+
+    if (opcion === null || opcion.trim() === "") return;
+
+    const overrides = JSON.parse(localStorage.getItem('estadoOverrides') || '{}');
+
+    switch (opcion) {
+        case '1': overrides[turnoId] = 'EN_PLATAFORMA'; break;
+        case '2': overrides[turnoId] = 'SALIENDO'; break;
+        case '3': overrides[turnoId] = 'RETRASADO'; break;
+        case '4': overrides[turnoId] = 'CANCELADO'; break;
+        
+        // --- NUEVAS OPCIONES DE ADICIONALES ---
+        case '5': overrides[turnoId] = 'ADICIONAL_MED'; break;
+        case '6': overrides[turnoId] = 'ADICIONAL_UNION'; break;
+        case '7': overrides[turnoId] = 'ADICIONAL_RIO'; break;
+        case '8': overrides[turnoId] = 'ADICIONAL_ABE'; break;
+
+        case '0': delete overrides[turnoId]; break;
+        default: alert("Opción no válida"); return;
+    }
+
+    localStorage.setItem('estadoOverrides', JSON.stringify(overrides));
+    actualizarTablaProximos();
+}
+    console.log(`Estado manual actualizado para turno ${turnoId}: ${overrides[turnoId] || 'Automático'}`);
