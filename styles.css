@@ -5,299 +5,181 @@
   --border-color: #2a4466;
   --text-color: #e6f1ff;
   --text-secondary: #a3c7e3;
-  --accent-color: #2d8cff;
+  --accent-color: #2d8cff; /* Azul Neón */
   --success-color: #1dc981;
   --warning-color: #ffc247;
-  --grid-gap: 18px;
+  
+  /* NUEVOS COLORES PARA EL RUTERO LED (ÁMBAR/NARANJA NEÓN) */
+  --rutero-bg: #151000; /* Fondo negro muy oscuro */
+  --rutero-text-color: #ffaa00; /* Ámbar/Naranja Neón */
+  
+  /* Variables para la animación de estrellas (Convertidas a CSS) */
+  --shooting-time: 3000ms;
+  --star-color-start: rgba(95, 145, 255, 1);
+  --star-color-end: rgba(0, 0, 255, 0);
+  --star-shadow: rgba(105, 155, 255, 1);
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
 body {
   font-family: 'Lato', system-ui, sans-serif;
   background-color: var(--main-bg);
   color: var(--text-color);
-  margin: 0;
-  padding: 0;
   line-height: 1.6;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
-/* Encabezado */
+/* ========== ENCABEZADO ========== */
 .encabezado {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: rgba(10, 25, 47, 0.85);
+  padding: 10px 15px;
+  background: rgba(10, 25, 47, 0.9);
   border-bottom: 1px solid var(--border-color);
+  border-radius: 10px;
+  margin-bottom: 10px;
   flex-wrap: wrap;
-  gap: 12px;
-}
-.encabezado-izq, .encabezado-der { flex: 0 0 auto; }
-.encabezado-centro { flex: 1; text-align: center; overflow: hidden; white-space: nowrap; }
-.logo { height: 48px; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-
-#reloj-digital {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: white;
-  font-family: 'Courier New', monospace;
-  background: rgba(0,0,0,0.3);
-  padding: 6px 12px;
-  border-radius: 6px;
-  min-width: 110px;
-  text-align: center;
-}
-
-/* Texto desplazante - UNA SOLA LÍNEA */
-.texto-desplazante-container { 
-  width: 100%; 
-  overflow: hidden; 
-  position: relative;
-  background: linear-gradient(90deg, 
-    rgba(13, 31, 48, 0.9) 0%, 
-    rgba(45, 140, 255, 0.3) 50%, 
-    rgba(13, 31, 48, 0.9) 100%);
-  border-radius: 8px;
-  padding: 8px 0;
-  box-shadow: 0 0 15px rgba(45, 140, 255, 0.5);
-  white-space: nowrap;
-}
-.texto-desplazante {
-  display: inline-block;
-  color: #2d8cff;
-  font-family: 'Cinzel', serif;
-  font-size: 1.2rem !important;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding-left: 100%;
-  animation: desplazarTexto 20s linear infinite;
-  text-shadow: 0 0 10px rgba(45, 140, 255, 0.7);
-  position: relative;
-  z-index: 2;
-  white-space: nowrap;
-}
-
-/* Efecto de estrellas en el fondo del texto */
-.texto-desplazante-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(white, rgba(255,255,255,0) 2px),
-    radial-gradient(white, rgba(255,255,255,0) 1px);
-  background-size: 50px 50px, 30px 30px;
-  background-position: 0 0, 20px 20px;
-  animation: twinkle 4s ease-in-out infinite alternate;
-  opacity: 0.3;
-  border-radius: 8px;
-}
-
-@keyframes twinkle {
-  0% { opacity: 0.2; }
-  100% { opacity: 0.5; }
-}
-
-@keyframes desplazarTexto {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
-/* Contenido */
-#toast-container {
-  position: fixed;
-  top: 70px;
-  right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
   gap: 10px;
-  max-width: 350px;
+  min-height: 90px;
 }
 
-.card {
-  background: var(--card-bg);
-  border-radius: 8px;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  overflow: hidden;
+.encabezado-izq, .encabezado-der { 
+  flex: 0 0 auto; 
+}
+
+.encabezado-centro { 
+  flex: 1; 
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  margin: 0 16px 16px;
-}
-
-.card-header {
-  background: var(--card-header-bg);
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid var(--border-color);
-}
-.card-header i { font-size: 1.4em; color: var(--accent-color); }
-.card-header h2 { margin: 0; font-size: 1.25rem; font-weight: 600; }
-
-.card-body {
-  padding: 20px;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.filtros {
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.filtros label {
-  font-weight: 600;
-  color: var(--text-secondary);
-  font-size: 1rem;
-}
-.filtros select {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: var(--card-bg);
-  color: var(--text-color);
-  font-family: 'Lato', sans-serif;
-  font-size: 1rem;
-  min-width: 180px;
-}
-
-/* Tabla: SIN LÍMITE DE REGISTROS */
-#tabla-proximos {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 1.15rem;
-}
-#tabla-proximos th,
-#tabla-proximos td {
-  font-weight: 600;
-  padding: 16px 18px;
-}
-#tabla-proximos th {
-  background: rgba(13, 42, 74, 0.7);
-  text-align: left;
-  color: var(--accent-color);
-  border-bottom: 2px solid var(--accent-color);
-}
-#tabla-proximos td {
-  border-bottom: 1px solid rgba(42, 68, 102, 0.5);
-  color: var(--text-color);
-}
-#tabla-proximos tr:hover td {
-  background-color: rgba(45, 140, 255, 0.12);
-}
-
-.tiempo-cell {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: space-between;
-}
-.barra-progreso-container {
-  width: 100%;
-  height: 8px;
-  background-color: rgba(255,255,255,0.1);
-  border-radius: 4px;
-  overflow: hidden;
-}
-.barra-progreso {
-  height: 100%;
-  transition: width 0.3s ease;
-}
-@keyframes brillo-lateral {
-  0% { box-shadow: inset -20px 0 20px rgba(255,255,255,0.4); }
-  50% { box-shadow: inset 20px 0 20px rgba(255,255,255,0.4); }
-  100% { box-shadow: inset -20px 0 20px rgba(255,255,255,0.4); }
-}
-.etiqueta-tiempo {
-  font-weight: bold;
-  min-width: 50px;
-  text-align: right;
-  font-size: 1rem;
-}
-
-.fila-parpadeante {
-  animation: parpadear-fila-verde 1.5s ease-in-out infinite;
-}
-@keyframes parpadear-fila-verde {
-  0% { background-color: rgba(140, 233, 154, 0.1); }
-  50% { background-color: rgba(140, 233, 154, 0.25); }
-  100% { background-color: rgba(140, 233, 154, 0.1); }
-}
-
-/* Loader */
-.loader {
-  text-align: center;
-  padding: 40px;
-  font-size: 1.2em;
-  color: var(--text-secondary);
-}
-.loader i {
-  font-size: 2em;
-  margin-bottom: 15px;
-  color: var(--accent-color);
-  animation: spin 1.5s linear infinite;
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Toasts */
-.toast-item {
-  background: linear-gradient(135deg, #0d2a4a, #1a2b40);
-  color: white;
-  padding: 15px 20px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-  border-left: 4px solid var(--success-color);
-  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 15px;
-  opacity: 0;
-  transform: translateX(100%);
-  animation: slideIn 0.5s forwards;
+  position: relative; 
+  overflow: hidden; 
+  min-height: 100px;
 }
-.toast-item.info { border-left-color: var(--accent-color); }
-.toast-item.warning { border-left-color: var(--warning-color); }
-.toast-item.warning i { color: var(--warning-color); }
-.toast-item i { font-size: 1.4rem; color: var(--success-color); }
-.toast-item.info i { color: var(--accent-color); }
-.toast-content { flex-grow: 1; }
-.toast-title { font-weight: 600; margin-bottom: 3px; }
-.toast-message { font-size: 0.95em; color: var(--text-secondary); }
-@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
-@keyframes slideOut { to { opacity: 0; transform: translateX(100%); } }
 
-/* Estilo para GIFs contextuales - ENCIMA DE LA TABLA */
+/* --- LOGO CONTENEDOR (Para el estilo circular de la imagen original) --- */
+.logo-container {
+    height: 70px;
+    width: 70px;
+    background: #ffffff; /* Fondo blanco */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    overflow: hidden; 
+}
+
+.logo { 
+  height: 90%; 
+  width: 90%;
+  object-fit: contain; 
+  border-radius: 50%; 
+}
+
+/* ========== RELOJ Y CLIMA GROUP (Ajuste de Layout) ========== */
+#reloj-clima-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 10; /* Por encima de las estrellas */
+}
+
+
+/* ========== RELOJ ESTILIZADO (Redimensionado) ========== */
+.reloj-estilizado {
+  z-index: 10;
+  font-size: 2.2rem; /* Reducido para hacer espacio al clima */
+  font-weight: 800;
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  background: linear-gradient(135deg, #0d2a4a, #1a3a5f);
+  padding: 10px 20px; /* Reducido el padding */
+  border-radius: 12px;
+  min-width: 150px;
+  text-align: center;
+  box-shadow: 
+      0 4px 15px rgba(0,0,0,0.3),
+      inset 0 1px 0 rgba(255,255,255,0.2);
+  border: 2px solid var(--accent-color);
+  text-shadow: 0 0 10px rgba(45, 140, 255, 0.7);
+  animation: pulse-reloj 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-reloj {
+  0% { 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3),
+                 inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  100% { 
+      box-shadow: 0 4px 20px rgba(45, 140, 255, 0.4),
+                 inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+}
+
+
+/* ========== TEXTO DESPLAZANTE MEJORADO ========== */
+.texto-desplazante-container { 
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: linear-gradient(90deg, 
+        rgba(13, 31, 48, 0.95) 0%, 
+        rgba(45, 140, 255, 0.4) 50%, 
+        rgba(13, 31, 48, 0.95) 100%);
+    border-radius: 10px;
+    padding: 10px 20px;
+    box-shadow: 0 0 20px rgba(45, 140, 255, 0.6);
+    overflow: hidden;
+    flex: 1;
+    min-width: 400px;
+}
+
+.texto-desplazante {
+    color: #2d8cff;
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(45, 140, 255, 0.9);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+/* ========== GIFS CONTEXTUALES (Z-Index para estar sobre las estrellas) ========== */
 #gifs-contextuales {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  display: none;
-  z-index: 800;
-  background: rgba(10, 25, 47, 0.85);
-  border-radius: 50%;
-  padding: 10px;
-  width: 160px;
-  height: 160px;
-  overflow: hidden;
-  box-shadow: 0 0 30px rgba(45, 140, 255, 0.6);
-  transition: all 0.3s ease;
+    z-index: 10;
+    background: rgba(10, 25, 47, 0.9);
+    border-radius: 50%;
+    padding: 8px;
+    width: 120px;
+    height: 120px;
+    overflow: hidden;
+    box-shadow: 0 0 25px rgba(45, 140, 255, 0.7);
+    display: none;
 }
 
 #gifs-inner {
@@ -324,39 +206,1067 @@ body {
   opacity: 1;
 }
 
-/* Clima contextual */
-#clima-contextual {
-  position: fixed; 
-  bottom: 20px; 
-  left: 20px; 
-  display: none; 
-  z-index: 800; 
-  background: rgba(10, 25, 47, 0.85); 
-  padding: 12px; 
-  border-radius: 12px; 
-  color: white; 
-  font-size: 0.95rem;
+/* ==================================================
+   ANIMACIÓN DE ESTRELLAS FUGACES (Fondo de .encabezado-centro)
+   ================================================== */
+#shooting-stars-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at bottom, #151d2b 0%, #06081b 100%);
+  transform: rotateZ(45deg); 
+  z-index: 1; 
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .encabezado { 
-    flex-direction: column; 
-    text-align: center; 
-  }
-  .encabezado-izq, .encabezado-centro, .encabezado-der { width: 100%; justify-content: center; }
-  .texto-desplazante { font-size: 1rem; animation-duration: 18s; }
-  #reloj-digital { font-size: 1.2rem; min-width: 100px; }
-  .logo { height: 42px; }
-  #tabla-proximos { font-size: 1rem; }
-  .filtros { justify-content: center; }
-  .barra-progreso-container { height: 6px; }
+.shooting_star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 2px;
+  background: linear-gradient(-45deg, var(--star-color-start), var(--star-color-end));
+  border-radius: 999px;
+  filter: drop-shadow(0 0 6px var(--star-shadow));
+  animation:
+    tail var(--shooting-time) ease-in-out infinite,
+    shooting var(--shooting-time) ease-in-out infinite;
+}
+
+.shooting_star::before {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 0;
+    height: 2px;
+    background: linear-gradient(-45deg, var(--star-color-end), var(--star-color-start), var(--star-color-end));
+    transform: translateX(50%) rotateZ(45deg);
+    border-radius: 100%;
+    animation: shining var(--shooting-time) ease-in-out infinite;
+    animation-delay: inherit; 
+}
+
+.shooting_star::after {
+    content: '';
+    position: absolute;
+    top: calc(50% - 1px);
+    right: 0;
+    height: 2px;
+    background: linear-gradient(-45deg, var(--star-color-end), var(--star-color-start), var(--star-color-end));
+    transform: translateX(50%) rotateZ(-45deg); 
+    border-radius: 100%;
+    animation: shining var(--shooting-time) ease-in-out infinite;
+    animation-delay: inherit; 
+}
+
+/* Posiciones y delays aleatorios para las 20 estrellas (Convertido de SCSS) */
+.shooting_star:nth-child(1) { top: calc(50% - -113px); left: calc(50% - 149px); animation-delay: 4366ms; }
+.shooting_star:nth-child(2) { top: calc(50% - 13px); left: calc(50% - 145px); animation-delay: 1533ms; }
+.shooting_star:nth-child(3) { top: calc(50% - 37px); left: calc(50% - 280px); animation-delay: 8468ms; }
+.shooting_star:nth-child(4) { top: calc(50% - -73px); left: calc(50% - 165px); animation-delay: 6940ms; }
+.shooting_star:nth-child(5) { top: calc(50% - -186px); left: calc(50% - 66px); animation-delay: 4323ms; }
+.shooting_star:nth-child(6) { top: calc(50% - 71px); left: calc(50% - 219px); animation-delay: 1795ms; }
+.shooting_star:nth-child(7) { top: calc(50% - -6px); left: calc(50% - 200px); animation-delay: 792ms; }
+.shooting_star:nth-child(8) { top: calc(50% - 173px); left: calc(50% - 188px); animation-delay: 8466ms; }
+.shooting_star:nth-child(9) { top: calc(50% - -189px); left: calc(50% - 291px); animation-delay: 7643ms; }
+.shooting_star:nth-child(10) { top: calc(50% - 146px); left: calc(50% - 279px); animation-delay: 9636ms; }
+.shooting_star:nth-child(11) { top: calc(50% - -18px); left: calc(50% - 270px); animation-delay: 9283ms; }
+.shooting_star:nth-child(12) { top: calc(50% - -72px); left: calc(50% - 300px); animation-delay: 5742ms; }
+.shooting_star:nth-child(13) { top: calc(50% - -186px); left: calc(50% - 216px); animation-delay: 8464ms; }
+.shooting_star:nth-child(14) { top: calc(50% - -123px); left: calc(50% - 20px); animation-delay: 7716ms; }
+.shooting_star:nth-child(15) { top: calc(50% - -133px); left: calc(50% - 253px); animation-delay: 1729ms; }
+.shooting_star:nth-child(16) { top: calc(50% - 73px); left: calc(50% - 245px); animation-delay: 1105ms; }
+.shooting_star:nth-child(17) { top: calc(50% - -47px); left: calc(50% - 72px); animation-delay: 2605ms; }
+.shooting_star:nth-child(18) { top: calc(50% - 20px); left: calc(50% - 270px); animation-delay: 4334ms; }
+.shooting_star:nth-child(19) { top: calc(50% - 85px); left: calc(50% - 150px); animation-delay: 5495ms; }
+.shooting_star:nth-child(20) { top: calc(50% - 173px); left: calc(50% - 100px); animation-delay: 7578ms; }
+
+
+@keyframes tail {
+  0% { width: 0; }
+  30% { width: 100px; }
+  100% { width: 0; }
+}
+
+@keyframes shining {
+  0% { width: 0; }
+  50% { width: 30px; }
+  100% { width: 0; }
+}
+
+@keyframes shooting {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(300px); }
+}
+
+/* ==================================================
+   FIN ANIMACIÓN DE ESTRELLAS
+   ================================================== */
+
+
+/* CLAVE: Estilos para el clima a la izquierda del reloj */
+#clima-contextual {
+  z-index: 10;
+  /* Reset de estilos de posición absoluta anterior */
+  position: static; 
+  top: auto; 
+  transform: none; 
+  right: auto; 
   
-  /* Ajustes para GIFs en móvil */
-  #gifs-contextuales {
-    width: 120px;
-    height: 120px;
-    top: 10px;
-    right: 10px;
+  /* Mantener el estilo del recuadro del clima */
+  background: rgba(10, 25, 47, 0.95);
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.8rem;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  backdrop-filter: blur(10px);
+  min-width: 140px;
+  max-width: 160px;
+}
+
+/* ========== TICKER ESTILO RUTERO LED ÁMBAR/NARANJA NEÓN ========== */
+.ticker-avisos {
+    /* Fondo oscuro, apariencia de panel LED */
+    background: var(--rutero-bg);
+    color: var(--rutero-text-color); 
+    padding: 10px 0;
+    border-top: 2px solid var(--rutero-text-color);
+    border-bottom: 2px solid var(--rutero-text-color);
+    overflow: hidden;
+    position: relative;
+    
+    /* Fuente Pixel/LED para simular el rutero */
+    font-family: 'Share Tech Mono', monospace; 
+    font-weight: bold;
+    font-size: 1.4rem; /* Un poco más grande para el efecto LED */
+    
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.5); /* Sombra Ámbar */
+    animation: neon-pulse-amber 2s infinite alternate; 
+    z-index: 1000;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+.ticker-contenido {
+    display: inline-block;
+    padding-left: 100%;
+    white-space: nowrap;
+    animation: ticker-scroll 25s linear infinite;
+    text-shadow: 0 0 5px var(--rutero-text-color); /* Sombra de texto Ámbar */
+    /* Simulación de la matriz de puntos LED */
+    text-rendering: optimizeSpeed; 
+    letter-spacing: 1px;
+}
+
+@keyframes neon-pulse-amber {
+    0% { box-shadow: 0 0 5px var(--rutero-text-color); }
+    100% { box-shadow: 0 0 20px var(--rutero-text-color), 0 0 30px rgba(255, 170, 0, 0.8); }
+}
+
+@keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+/* ========== CLIMA COMPACTO MEJORADO (Detalles) ========== */
+.clima-compacto {
+  background: transparent;
+  color: inherit;
+}
+
+.clima-compacto.respaldo {
+  opacity: 0.8;
+}
+
+.clima-header-compacto {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  gap: 8px;
+}
+
+.clima-icono-compacto {
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+}
+
+.clima-emoji {
+  font-size: 28px;
+  line-height: 1;
+  width: 32px;
+  text-align: center;
+}
+
+.clima-temp {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffd43b;
+  text-shadow: 0 0 8px rgba(255, 212, 59, 0.4);
+}
+
+.clima-detalles-compacto {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  font-size: 0.75rem;
+  margin-bottom: 4px;
+}
+
+.clima-detalles-compacto span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 0;
+}
+
+.clima-ubicacion {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 4px;
+  margin-top: 4px;
+}
+
+.clima-actualizado {
+  font-size: 0.6rem;
+  opacity: 0.5;
+  text-align: center;
+  margin-top: 2px;
+}
+/* ========== CONTENIDO PRINCIPAL ========== */
+#toast-container {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 400px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 10px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.card-header {
+  background: var(--card-header-bg);
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+.card-header i { 
+  font-size: 1.5em; 
+  color: var(--accent-color); 
+}
+.card-header h2 { 
+  margin: 0; 
+  font-size: 1.4rem; 
+  font-weight: 600; 
+}
+
+.card-body {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.filtros {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.filtros label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+.filtros select {
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-color);
+  font-family: 'Lato', sans-serif;
+  font-size: 1rem;
+  min-width: 200px;
+}
+
+/* ========== AVISOS ESPECIALES ========== */
+.aviso-especial {
+    background: linear-gradient(135deg, #ffd43b, #fab005);
+    color: #2b2b2b;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #e67700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 212, 59, 0.3);
+    animation: pulse-aviso 2s infinite;
+}
+
+.aviso-especial i {
+    color: #e67700;
+    font-size: 1.4rem;
+}
+
+@keyframes pulse-aviso {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+}
+
+/* ========== TABLA MEJORADA ========== */
+.proximos-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+#tabla-proximos {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1.1rem;
+  flex: 1;
+}
+#tabla-proximos th,
+#tabla-proximos td {
+  font-weight: 600;
+  padding: 14px 16px;
+  white-space: nowrap;
+  border-bottom: 1px solid rgba(42, 68, 102, 0.3);
+}
+#tabla-proximos th {
+  background: rgba(13, 42, 74, 0.8);
+  text-align: left;
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-size: 1.1rem;
+}
+#tabla-proximos td {
+  color: var(--text-color);
+}
+#tabla-proximos tr:hover td {
+  background-color: rgba(45, 140, 255, 0.1);
+}
+
+.tiempo-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: space-between;
+}
+.barra-progreso-container {
+  width: 100%;
+  height: 10px;
+  background-color: rgba(255,255,255,0.1);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.barra-progreso {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.etiqueta-tiempo {
+  font-weight: bold;
+  min-width: 60px;
+  text-align: right;
+  font-size: 1rem;
+}
+
+.fila-parpadeante {
+  animation: parpadear-fila-verde 1.5s ease-in-out infinite;
+}
+@keyframes parpadear-fila-verde {
+  /* CIAN SUAVE PARA MEJOR CONTRASTE CON FONDO OSCURO */
+  0% { background-color: rgba(0, 255, 255, 0.05); } 
+  50% { background-color: rgba(0, 255, 255, 0.2); }
+  100% { background-color: rgba(0, 255, 255, 0.05); }
+}
+
+/* ========== LOADER ========== */
+.loader {
+  text-align: center;
+  padding: 50px;
+  font-size: 1.3em;
+  color: var(--text-secondary);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.loader i {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+  color: var(--accent-color);
+  animation: spin 1.5s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ========== TOASTS ========== */
+.toast-item {
+  background: linear-gradient(135deg, #0d2a4a, #1a2b40);
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+  border-left: 4px solid var(--success-color);
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  opacity: 0;
+  transform: translateX(100%);
+  animation: slideIn 0.5s forwards;
+}
+.toast-item.info { border-left-color: var(--accent-color); }
+.toast-item.warning { border-left-color: var(--warning-color); }
+.toast-item.warning i { color: var(--warning-color); }
+.toast-item i { font-size: 1.4rem; color: var(--success-color); }
+.toast-item.info i { color: var(--accent-color); }
+.toast-content { flex-grow: 1; }
+.toast-title { font-weight: 600; margin-bottom: 3px; }
+.toast-message { font-size: 0.95em; color: var(--text-secondary); }
+@keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+
+/* ========== RESPONSIVE BÁSICO ========== */
+@media (max-width: 1200px) {
+  .texto-desplazante {
+    font-size: 1.4rem;
   }
+  
+  .reloj-estilizado {
+    font-size: 2rem;
+    padding: 12px 20px;
+    min-width: 160px;
+  }
+}
+/* ======================================================
+   AQUÍ TERMINAN LOS ESTILOS DE CELULAR (MEDIA QUERY)
+   Asegúrate de copiar este bloque con cuidado
+   ====================================================== */
+
+@media (max-width: 768px) {
+  body {
+    padding: 5px;
+  }
+  
+  .encabezado {
+    flex-direction: column;
+    gap: 10px;
+    min-height: auto;
+  }
+  
+  .texto-desplazante-container {
+    min-width: 100%;
+    height: 60px;
+  }
+  
+  .texto-desplazante {
+    font-size: 1.1rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+  
+  .reloj-estilizado {
+    font-size: 1.6rem;
+    padding: 10px 15px;
+    min-width: 140px;
+  }
+  
+  #gifs-contextuales {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .card-body {
+    padding: 15px;
+  }
+  
+  #tabla-proximos {
+    font-size: 0.9rem;
+  }
+  
+  #tabla-proximos th,
+  #tabla-proximos td {
+    padding: 10px 12px;
+  }
+
+  #clima-contextual {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    margin: 10px auto;
+    max-width: 100%;
+    min-width: auto;
+  }
+
+  /* Ajustes específicos para móviles */
+  .badge {
+      padding: 4px 8px;
+      min-width: auto;
+  }
+
+  .hora-normal {
+      font-size: 1.1em;
+  }
+} /* <--- ¡ESTA LLAVE ES IMPORTANTE! CIERRA EL MODO CELULAR AQUÍ */
+
+
+/* =======================================================
+   ESTILOS GLOBALES (AHORA SÍ FUERA DEL MEDIA QUERY)
+   Estos aplicarán tanto en PC como en celular
+   ======================================================= */
+
+/* --- 1. COLUMNA RUTA --- */
+.ruta-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Lato', sans-serif;
+}
+
+.ruta-origen {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.ruta-flecha {
+    color: var(--accent-color);
+    font-size: 0.9em;
+    opacity: 0.8;
+    transform: translateY(1px);
+}
+
+.ruta-destino {
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 1.15em;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+    letter-spacing: 0.5px;
+}
+
+/* --- 2. COLUMNA VÍA --- */
+.via-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(45, 140, 255, 0.1);
+    border: 1px solid rgba(45, 140, 255, 0.2);
+    color: #a3c7e3;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.via-tag i {
+    font-size: 0.8em;
+    color: var(--accent-color);
+}
+
+/* --- 3. ESTADOS (A TIEMPO / PRÓXIMO) --- */
+
+/* ESTADO PRÓXIMO (> 10 min) - Gris Moderno */
+.badge-proximo {
+    background-color: rgba(108, 117, 125, 0.15) !important;
+    border: 1px solid rgba(108, 117, 125, 0.4) !important;
+    color: #ced4da;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge-proximo::before {
+    content: '\f017'; /* Icono reloj */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 0.9em;
+    color: #adb5bd;
+}
+
+/* ESTADO A TIEMPO (<= 10 min) - Verde Neón */
+.badge-atiempo {
+    background-color: rgba(32, 201, 151, 0.15) !important;
+    color: #20c997;
+    border: 1px solid #20c997 !important;
+    box-shadow: 0 0 12px rgba(32, 201, 151, 0.25);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.badge-atiempo::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #20c997;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #20c997;
+    animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+    0% { opacity: 0.4; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+    100% { opacity: 0.4; transform: scale(0.8); }
+}
+
+/* Otros Estados */
+.badge-retrasado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(255, 107, 107, 0.15);
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.badge-adelantado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(77, 171, 247, 0.15);
+    color: #4dabf7;
+    border: 1px solid #4dabf7;
+}
+
+.badge-cancelado {
+    border-radius: 50px;
+    padding: 6px 14px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #868e96;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-decoration: none;
+}
+/* =========================================
+   NUEVOS ESTILOS: HORA, VEHÍCULO, ORIGEN
+   ========================================= */
+
+/* --- 1. ESTILO HORA DIGITAL --- */
+.hora-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05); /* Fondo muy sutil */
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-left: 3px solid var(--accent-color); /* Línea azul a la izquierda */
+    width: fit-content;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.hora-badge i {
+    color: var(--accent-color);
+    font-size: 1.1em;
+}
+
+.hora-digito {
+    font-family: 'Share Tech Mono', monospace; /* Fuente estilo reloj digital */
+    font-size: 1.35em;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+/* Variaciones para retraso/adelanto */
+.hora-cambio {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.hora-tachada-mini {
+    text-decoration: line-through;
+    font-size: 0.75em;
+    color: #6c757d;
+}
+
+.hora-retraso {
+    color: #ff6b6b;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+.hora-adelanto {
+    color: #4dabf7;
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+.hora-tachada {
+    text-decoration: line-through;
+    color: #6c757d;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.2em;
+}
+
+/* --- 2. ESTILO VEHÍCULO (CHIP) --- */
+.vehiculo-chip {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #162436, #1f3a58);
+    border: 1px solid #2a4466;
+    padding: 6px 14px;
+    border-radius: 12px; /* Más redondeado */
+    width: fit-content;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+tr:hover .vehiculo-chip {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.vehiculo-icono {
+    font-size: 1.5em;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+}
+
+.vehiculo-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1;
+}
+
+.vehiculo-num {
+    font-weight: 800;
+    font-size: 1.3em;
+    color: #ffffff;
+    font-family: 'Lato', sans-serif;
+}
+
+.vehiculo-tipo {
+    font-size: 0.75em;
+    color: #a3c7e3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- 3. ESTILO RUTA MEJORADO (ORIGEN DESTACADO) --- */
+.ruta-container {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Más separación */
+}
+
+.ruta-origen-group, .ruta-destino-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ruta-icon-orig {
+    font-size: 0.8em;
+    color: #a3c7e3; /* Color suave para origen */
+}
+
+.ruta-origen {
+    font-weight: 600; /* Un poco más grueso */
+    color: #d0e1f0;   /* Blanco azulado, más visible que antes */
+    font-size: 1em;
+}
+
+.ruta-flecha {
+    color: var(--accent-color);
+    font-size: 0.9em;
+    opacity: 0.6;
+}
+
+.ruta-icon-dest {
+    font-size: 0.9em;
+    color: #fff;
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.4));
+}
+
+.ruta-destino {
+    font-weight: 800;
+    color: #fff;
+    font-size: 1.2em;
+    text-shadow: 0 0 10px rgba(45, 140, 255, 0.3);
+}
+
+/* Ajuste de alineación para la celda de Vía */
+.via-tag i {
+    margin-right: 4px;
+}
+/* =========================================
+   NUEVOS ESTILOS: ESTADO ABORDAJE Y COLORES DESTINO
+   ========================================= */
+
+/* --- 1. BADGE "EN PLATAFORMA" (Urgente) --- */
+.badge-abordaje {
+    background-color: rgba(0, 255, 136, 0.25) !important; /* Fondo Verde Matrix */
+    color: #ffffff;
+    border: 1px solid #00ff88 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+    border-radius: 50px;
+    padding: 6px 14px;
+    font-size: 0.8em;
+    letter-spacing: 1px;
+    backdrop-filter: blur(4px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-weight: 900;
+    text-transform: uppercase;
+    animation: pulse-green-border 1.5s infinite alternate;
+}
+
+.badge-abordaje::before {
+    content: '\f2f6'; /* Icono de usuario/pasajero o puerta */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    font-size: 1em;
+    margin-right: 4px;
+}
+
+@keyframes pulse-green-border {
+    0% { box-shadow: 0 0 5px rgba(0, 255, 136, 0.2); border-color: rgba(0, 255, 136, 0.5); }
+    100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.6); border-color: #00ff88; }
+}
+
+/* --- 2. COLORES DINÁMICOS PARA DESTINOS --- */
+
+/* Medellin (Azul/Cian) */
+.dest-medellin {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.6);
+}
+
+/* Rionegro (Naranja/Ámbar) */
+.dest-rionegro {
+    color: #ffaa00 !important;
+    text-shadow: 0 0 10px rgba(255, 170, 0, 0.6);
+}
+
+/* La Unión (Morado/Magenta) */
+.dest-launion {
+    color: #e056fd !important; /* Fuscia */
+    text-shadow: 0 0 10px rgba(224, 86, 253, 0.6);
+}
+
+/* Abejorral (Verde Lima) */
+.dest-abejorral {
+    color: #badc58 !important;
+    text-shadow: 0 0 10px rgba(186, 220, 88, 0.6);
+}
+
+/* La Ceja (Blanco Brillante) - O el color que prefieras */
+.dest-laceja {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* Default (Gris azulado claro) */
+.dest-default {
+    color: #dbe4ff !important;
+}
+/* =========================================
+   MODO NOCHE (ULTRA DARK / HIGH CONTRAST)
+   ========================================= */
+
+body.modo-noche {
+    /* Fondo negro absoluto para reducir brillo */
+    --main-bg: #000000;
+    --card-bg: #0a0a0a;
+    --card-header-bg: #111111;
+    --border-color: #333333;
+    
+    /* Textos con menos brillo (blanco grisáceo) */
+    --text-color: #c0c0c0;
+    --text-secondary: #808080;
+    
+    /* Cambiar el Azul Neón por Ámbar/Naranja (menos luz azul, mejor para la noche) */
+    --accent-color: #ff9f43; 
+    
+    /* El rutero ya es oscuro, pero ajustamos si es necesario */
+    --rutero-bg: #000000;
+}
+
+/* Ajustes específicos para el Modo Noche */
+body.modo-noche .encabezado {
+    background: #050505;
+    border-bottom: 1px solid #333;
+}
+
+/* Oscurecer el fondo de estrellas */
+body.modo-noche #shooting-stars-bg {
+    background: radial-gradient(ellipse at bottom, #0a0a0a 0%, #000000 100%);
+    opacity: 0.6; /* Hacemos las estrellas más tenues */
+}
+
+/* Cambiar el gradiente del reloj para que sea oscuro */
+body.modo-noche .reloj-estilizado {
+    background: linear-gradient(135deg, #111, #222);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 159, 67, 0.2);
+    color: var(--accent-color);
+}
+
+/* Ajustar los badges de "Próximo" para que no brillen tanto */
+body.modo-noche .badge-proximo {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    color: #666;
+    border-color: #444 !important;
+}
+
+/* El botón de toggle (que crearemos abajo) */
+#btn-modo-noche {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+    margin-left: 10px;
+}
+
+body.modo-noche #btn-modo-noche {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px rgba(255, 159, 67, 0.4);
+}
+/* =========================================
+   ESTILO PARA EDICIÓN MANUAL DE ESTADO
+   ========================================= */
+
+/* Cuando pasas el mouse por encima de la columna Estado (la 4ta columna) */
+#tabla-proximos td:nth-child(4) {
+    transition: background-color 0.2s;
+}
+
+#tabla-proximos td:nth-child(4):hover {
+    background-color: rgba(255, 255, 255, 0.15); /* Se ilumina un poco */
+    cursor: pointer; /* El cursor cambia a manito */
+    border-radius: 8px;
+    position: relative;
+}
+
+/* Opcional: Un pequeño tooltip visual */
+#tabla-proximos td:nth-child(4):hover::after {
+    content: "✎ Doble clic";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+/* =========================================
+   ESTILOS PARA BUSES ADICIONALES
+   ========================================= */
+
+/* Estilo Base para Adicionales */
+.badge-adic-med, .badge-adic-union, .badge-adic-rio, .badge-adic-abe {
+    border-radius: 50px;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    display: inline-block;
+}
+
+/* 1. ADICIONAL MEDELLÍN (Cyan / Azul Neón) */
+.badge-adic-med {
+    background-color: rgba(0, 255, 255, 0.2);
+    color: #00ffff;
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+/* 2. ADICIONAL LA UNIÓN (Fucsia / Morado) */
+.badge-adic-union {
+    background-color: rgba(224, 86, 253, 0.2);
+    color: #e056fd;
+    border-color: #e056fd;
+    box-shadow: 0 0 10px rgba(224, 86, 253, 0.3);
+}
+
+/* 3. ADICIONAL RIONEGRO (Naranja / Ámbar) */
+.badge-adic-rio {
+    background-color: rgba(255, 170, 0, 0.2);
+    color: #ffaa00;
+    border-color: #ffaa00;
+    box-shadow: 0 0 10px rgba(255, 170, 0, 0.3);
+}
+
+/* 4. ADICIONAL ABEJORRAL (Verde Lima) */
+.badge-adic-abe {
+    background-color: rgba(186, 220, 88, 0.2);
+    color: #badc58;
+    border-color: #badc58;
+    box-shadow: 0 0 10px rgba(186, 220, 88, 0.3);
+}
+
+/* Animación suave para la fila de un adicional */
+.fila-adicional {
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.02) 100%);
+    border-left: 4px solid #fff; /* Borde blanco para resaltar que es especial */
 }

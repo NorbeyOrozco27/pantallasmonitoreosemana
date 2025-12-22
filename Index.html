@@ -3,38 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monitor de Salidas - Sistema de Transporte</title>
-  <!-- Google Fonts: Lato + Cinzel -->
+  <title>Monitor de Salidas - TransUnidos</title>
+  <!-- Google Fonts: Lato + Cinzel + Share Tech Mono (Para el Ticker/Rutero) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;600;700&family=Cinzel:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Encabezado unificado -->
   <div class="encabezado">
-    <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
-    <div class="texto-desplazante-container">
-      <div class="texto-desplazante">
-        TransUnidos una empresa con vocación de servicio
+    <div class="encabezado-izq">
+      <!-- Contenedor para el logo con estilo circular -->
+      <div class="logo-container">
+        <img src="assets/logo.png" alt="Logo TransUnidos" class="logo">
       </div>
     </div>
-    <div id="reloj-digital"></div>
+    
+    <div class="encabezado-centro">
+      <!-- FONDO DE ESTRELLAS FUGACES (para animación) -->
+      <div id="shooting-stars-bg" class="night">
+        <div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div><div class="shooting_star"></div>
+      </div>
+      
+      <!-- Agrupador para Reloj y Clima -->
+      <div id="reloj-clima-group">
+        <!-- CLIMA CONTEXTUAL -->
+        <div id="clima-contextual"></div>
+        <!-- RELOJ DIGITAL -->
+        <div id="reloj-digital" class="reloj-estilizado"></div>
+      </div>
+
+      <!-- GIF CONTEXTUAL -->
+      <div id="gifs-contextuales" style="display: none;">
+        <div id="gifs-inner"></div>
+      </div>
+      
+    </div>
+    
+    <div class="encabezado-der">
+      <button id="btn-modo-noche" onclick="alternarModoNoche()" title="Cambiar Modo Noche">
+        <i class="fa-solid fa-moon"></i>
+    </button><!-- TEXTO DESPLAZANTE RESPONSIVE -->
+      <div class="texto-desplazante-container">
+        <div class="texto-desplazante">  
+          TransUnidos una empresa con vocación de servicio
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticker de avisos especiales -->
+  <div id="ticker-avisos" class="ticker-avisos" style="display: none;">
+    <div id="ticker-contenido" class="ticker-contenido"></div>
   </div>
 
   <div id="toast-container"></div>
 
-  <!-- GIFs contextuales - AHORA ENCIMA DE LA TABLA -->
-  <div id="gifs-contextuales" style="display: none;">
-    <div id="gifs-inner"></div>
-  </div>
-
-  <!-- Tabla -->
+  <!-- Contenido principal -->
   <div id="proximos-turnos-card" class="card full-screen">
     <div class="card-header">
       <i class="fa-solid fa-list"></i>
-      <h2>Próximos Turnos</h2>
+      <h2>Próximos Turnos TransUnidos</h2>
     </div>
     <div class="card-body">
       <div class="filtros">
@@ -43,6 +74,13 @@
           <option value="">Todos los orígenes</option>
         </select>
       </div>
+
+      <!-- Avisos especiales -->
+      <div id="avisos-especiales" class="aviso-especial" style="display: none;">
+        <i class="fa-solid fa-bullhorn"></i>
+        <span id="aviso-texto"></span>
+      </div>
+
       <div id="proximos-loader" class="loader">
         <i class="fa-solid fa-spinner"></i>
       </div>
@@ -53,6 +91,7 @@
               <th>Hora</th>
               <th>Vehículo</th>
               <th>Ruta</th>
+              <th style="text-align: center;">Estado</th> 
               <th>Vía</th>
               <th>Tiempo</th>
             </tr>
@@ -62,9 +101,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Clima contextual -->
-  <div id="clima-contextual"></div>
 
   <!-- Configuración de Supabase -->
   <script>
