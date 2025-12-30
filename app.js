@@ -146,7 +146,7 @@ const horariosEspeciales = {
         { hora: "15:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "15:00", mensaje: " ", destino: "Medellin Term.Sur", via: "San Antonio" },
         { hora: "16:00", mensaje: " ", destino: "Medellin Term. Norte", via: "San Antonio" },
-        { hora: "17:00", mensaje: " ", destino: "Medellin Term.Su", via: "San Antonio" },
+        { hora: "16:40", mensaje: " ", destino: "Medellin Term.Su", via: "San Antonio" },
         { hora: "16:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "16:30", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
         { hora: "17:00", mensaje: "", destino: "Rionegro", via: "Pontezuela" },
